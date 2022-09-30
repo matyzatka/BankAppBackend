@@ -2,6 +2,8 @@ plugins {
     id 'org.springframework.boot' version '2.7.4'
     id 'io.spring.dependency-management' version '1.0.14.RELEASE'
     id 'java'
+    id 'jacoco'
+    id 'checkstyle'
 }
 
 group = 'mzatka'
@@ -35,4 +37,54 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "**/models/**",
+                    "**/exceptions/**"
+            ])
+        }))
+    }
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = false
+        html.required = false
+        csv.required = true
+        csv.outputLocation = file("build/reports/jacoco/test/jacocoTestReport.csv")
+    }
+}
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+}
+
+apply plugin: 'checkstyle'
+apply plugin: 'jacoco'
+
+checkstyle {
+    toolVersion "8.32"
+    configFile file("config/checkstyle/checkstyle.xml")
+}
+checkstyleMain {
+    source = 'src/main/java'
+}
+checkstyleTest {
+    source = 'src/test/java'
+}
+
+jacocoTestReport {
+    reports {
+        csv.enabled true
+    }
 }
