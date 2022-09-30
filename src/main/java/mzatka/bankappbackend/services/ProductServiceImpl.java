@@ -24,9 +24,9 @@ public class ProductServiceImpl implements ProductService {
     Product product = ProductFactory.createProduct(productType);
     product.setAccount(account);
     String iban;
-      do {
-        iban = ibanUtilities.generateIBAN();
-      } while (!ibanUtilities.isIbanAvailable(iban));
+    do {
+      iban = ibanUtilities.generateIBAN();
+    } while (!ibanUtilities.isIbanAvailable(iban));
     product.setIBAN(iban);
     return productRepository.save(product);
   }

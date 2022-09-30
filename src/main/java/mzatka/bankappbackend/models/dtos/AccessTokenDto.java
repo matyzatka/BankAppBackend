@@ -7,5 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class AccessTokenDto implements Dto {
 
-    private String accessToken;
+  private String accessToken;
 }

@@ -28,10 +28,6 @@ public class DtoServiceImpl implements DtoService {
   @Override
   public AllCustomersDto showAllCustomers() {
     return new AllCustomersDto(
-        customerRepository
-                .findAll()
-                .stream()
-                .map(this::convertToDto)
-                .collect(toList()));
+        customerRepository.findAll().stream().map(this::convertToDto).collect(toList()));
   }
 }

@@ -30,6 +30,7 @@ public abstract class Product {
 
   @JsonProperty(value = "IBAN")
   private String IBAN;
+
   private Double balance;
   private Double interest;
 }

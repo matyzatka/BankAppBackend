@@ -5,7 +5,7 @@ import mzatka.bankappbackend.models.dtos.CustomerDto;
 import mzatka.bankappbackend.models.entities.Customer;
 
 public interface DtoService {
-    CustomerDto convertToDto(Customer customer);
+  CustomerDto convertToDto(Customer customer);
 
-    AllCustomersDto showAllCustomers();
+  AllCustomersDto showAllCustomers();
 }
