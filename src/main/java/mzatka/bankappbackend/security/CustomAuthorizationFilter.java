@@ -66,7 +66,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         throw new AccessDeniedException("Access denied.");
       }
     } catch (Exception e) {
-      response.setHeader("error", e.getMessage());
       response.setStatus(FORBIDDEN.value());
       response.setContentType(APPLICATION_JSON_VALUE);
       HashMap<String, String> error = new HashMap<>();

@@ -22,4 +22,15 @@ public class NewCustomerDto implements Dto {
   @NotBlank @NotNull private String dateOfBirth;
   @NotBlank @NotNull private String phone;
   @NotBlank @NotNull private String address;
+
+  public NewCustomerDto(String email, String username, String password, String firstName, String lastName, String dateOfBirth, String phone, String address) {
+    this.email = email;
+    this.username = username;
+    this.password = password;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.dateOfBirth = dateOfBirth;
+    this.phone = phone;
+    this.address = address;
+  }
 }

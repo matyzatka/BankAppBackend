@@ -2,6 +2,7 @@ package mzatka.bankappbackend.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-  public static final int TOKEN_EXPIRATION_TIME = 3600000; // 1 hour
+  public static final int TOKEN_EXPIRATION_TIME = 3600000;
 
   private final AuthenticationConfiguration configuration;
 
@@ -30,7 +31,7 @@ public class SecurityConfiguration {
 
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
-    return (web) -> web.ignoring().antMatchers("/**");
+    return (web) -> web.ignoring().antMatchers("/login", "/sign-up");
   }
 
   @Bean
@@ -41,7 +42,7 @@ public class SecurityConfiguration {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
     httpSecurity.addFilterBefore(
-        new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+            new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     return httpSecurity.build();
   }
 }

@@ -64,6 +64,7 @@ public class CustomerServiceImpl implements CustomerService {
       throw new IllegalStateException(String.format("No such role: %s", roleName));
     }
     customer.getRoles().add(role);
+    customerRepository.save(customer);
   }
 
   @Override
