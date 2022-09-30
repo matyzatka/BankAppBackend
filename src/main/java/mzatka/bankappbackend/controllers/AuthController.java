@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-public class EntryController {
+public class AuthController {
 
   private final CustomerService customerService;
 
-  public EntryController(CustomerService customerService) {
+  public AuthController(CustomerService customerService) {
     this.customerService = customerService;
   }
 
@@ -37,11 +37,9 @@ public class EntryController {
 
   @PostMapping("/login")
   public ResponseEntity<Dto> login(@RequestBody @Valid LoginAttemptDto loginAttemptDto) {
-
     String username = loginAttemptDto.getUsername();
     String password = loginAttemptDto.getPassword();
     Customer customer = customerService.getCustomerByUsername(username);
-
     if (customer == null) {
       return ResponseEntity.status(403)
           .body(new MessageDto(String.format("No such user with username: %s", username)));
@@ -49,7 +47,6 @@ public class EntryController {
     if (!customerService.passwordIsCorrect(password, customer.getPassword())) {
       return ResponseEntity.status(403).body(new MessageDto("Password is not correct."));
     }
-
     User loggingUser = (User) customerService.loadCustomerByUsername(username);
     String token = customerService.getToken(loggingUser);
     return ResponseEntity.ok().body(new AccessTokenDto(token));

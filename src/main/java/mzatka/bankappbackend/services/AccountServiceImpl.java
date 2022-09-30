@@ -24,7 +24,7 @@ public class AccountServiceImpl implements AccountService {
   @Override
   public Account createNewAccount(Customer customer) {
     Account account = new Account(customer);
-    account.getProducts().add(productService.addNewProduct(CHECKING_ACCOUNT, account));
+    account.getProducts().add(productService.createProduct(CHECKING_ACCOUNT, account));
     accountRepository.save(account);
     return account;
   }

@@ -36,11 +36,9 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
       @NotNull HttpServletResponse response,
       @NotNull FilterChain filterChain)
       throws IOException {
-
     String authorizationHeader = request.getHeader(AUTHORIZATION);
 
     try {
-
       if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
         String token = authorizationHeader.substring("Bearer ".length());
         Dotenv dotenv = Dotenv.load();

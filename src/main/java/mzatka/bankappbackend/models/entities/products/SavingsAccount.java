@@ -12,6 +12,6 @@ public class SavingsAccount extends Product {
   public SavingsAccount() {
     this.setProductType(SAVINGS_ACCOUNT);
     this.setBalance(0.0);
-    this.setInterest(3.9);
+    this.setInterest(1.1);
   }
 }

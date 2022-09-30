@@ -1,6 +1,7 @@
 package mzatka.bankappbackend.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,7 @@ public class Customer {
   private Long id;
 
   private String username;
-  private String password;
+  @JsonIgnore private String password;
   private String firstName;
   private String lastName;
   private String dateOfBirth;

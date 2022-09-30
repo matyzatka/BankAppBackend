@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/customer/")
-public class CustomerController {
+@RequestMapping("/api/customer")
+public class CustomerApiController {
 
   private final DtoService dtoService;
   private final CustomerService customerService;
 
-  public CustomerController(DtoService dtoService, CustomerService customerService) {
+  public CustomerApiController(DtoService dtoService, CustomerService customerService) {
     this.dtoService = dtoService;
     this.customerService = customerService;
   }

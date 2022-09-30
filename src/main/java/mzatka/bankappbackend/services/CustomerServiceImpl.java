@@ -155,7 +155,7 @@ public class CustomerServiceImpl implements CustomerService {
     Dotenv dotenv = Dotenv.load();
     String token = bearerToken.substring("bearer ".length());
     Algorithm algorithm =
-        Algorithm.HMAC256(
+        Algorithm.HMAC512(
             Objects.requireNonNull(dotenv.get("JWT_SECRET_KEY")).getBytes(StandardCharsets.UTF_8));
     JWTVerifier verifier = JWT.require(algorithm).build();
     DecodedJWT decodedJWT = verifier.verify(token);
