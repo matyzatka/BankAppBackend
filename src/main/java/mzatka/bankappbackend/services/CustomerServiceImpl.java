@@ -83,7 +83,7 @@ public class CustomerServiceImpl implements CustomerService {
 
   @Override
   public void deleteCustomer(Long id) {
-    if (customerRepository.findById(id).isEmpty()) {
+    if (customerRepository.findById(id).get() == null) {
       throw new IllegalStateException(
           String.format("Customer with id: %d not found in database.", id));
     }
