@@ -7,9 +7,11 @@ import mzatka.bankappbackend.models.enums.ProductType;
 import mzatka.bankappbackend.models.factories.ProductFactory;
 import mzatka.bankappbackend.repositories.ProductRepository;
 import mzatka.bankappbackend.utilities.IbanUtilities;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
 
 import static mzatka.bankappbackend.models.enums.ProductType.CREDIT_CARD;
@@ -59,5 +61,20 @@ public class ProductServiceImpl implements ProductService {
   public boolean deletedProduct(Customer customer, String iban) {
     List<Product> products = customer.getAccount().getProducts();
     return products.removeIf(product -> product.getIBAN().equals(iban));
+  }
+
+  @Override
+  @Scheduled(initialDelay = 5000, fixedRate = 5000)
+  public void creditTheInterestOnSavingsAccounts() {
+    try {
+      productRepository.findAll().stream()
+          .filter(product -> product.getProductType().equals(SAVINGS_ACCOUNT))
+          .forEach(
+              product ->
+                  product.setBalance(
+                      product.getBalance().multiply(BigDecimal.valueOf(product.getInterest()))));
+    } catch (Exception e) {
+      System.out.println("error in scheduled task");
+    }
   }
 }

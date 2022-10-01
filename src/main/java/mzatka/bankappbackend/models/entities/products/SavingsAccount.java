@@ -4,6 +4,8 @@ import mzatka.bankappbackend.models.entities.Product;
 
 import javax.persistence.Entity;
 
+import java.math.BigDecimal;
+
 import static mzatka.bankappbackend.models.enums.ProductType.SAVINGS_ACCOUNT;
 
 @Entity
@@ -11,7 +13,7 @@ public class SavingsAccount extends Product {
 
   public SavingsAccount() {
     this.setProductType(SAVINGS_ACCOUNT);
-    this.setBalance(0.0);
-    this.setInterest(1.1);
+    this.setBalance(new BigDecimal("1000.00"));
+    this.setInterest(1.01);
   }
 }

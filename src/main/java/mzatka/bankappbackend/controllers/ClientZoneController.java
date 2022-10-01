@@ -56,7 +56,7 @@ public class ClientZoneController {
       Long id = customer.getId();
       customerService.deleteCustomer(id);
       return ResponseEntity.ok(new MessageDto("Customer deleted successfully."));
-    } catch (Exception e) {
+    } catch (NullPointerException e) {
       return ResponseEntity.badRequest().body(new MessageDto("Customer does not exist anymore."));
     }
   }

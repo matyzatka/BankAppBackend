@@ -9,5 +9,5 @@ import javax.validation.constraints.NotNull;
 public class TransferDto {
 
   @NotBlank @NotNull private String iban;
-  @NotNull private Double amount;
+  @NotNull private Integer amount;
 }

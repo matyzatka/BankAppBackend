@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 public enum ProductType {
   CHECKING_ACCOUNT("Checking Account", CheckingAccount::new),
+  DEBIT_CARD("Debit Card", CreditCard::new),
   SAVINGS_ACCOUNT("Savings Account", SavingsAccount::new),
   CREDIT_CARD("Credit Card", CreditCard::new);
 

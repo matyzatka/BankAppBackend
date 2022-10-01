@@ -12,4 +12,6 @@ public interface ProductService {
   boolean addedProduct(String productName, Customer customer);
 
   boolean deletedProduct(Customer customer, String iban);
+
+    void creditTheInterestOnSavingsAccounts();
 }

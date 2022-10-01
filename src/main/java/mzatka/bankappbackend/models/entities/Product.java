@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import mzatka.bankappbackend.models.enums.ProductType;
+import mzatka.bankappbackend.utilities.BigDecimalConverter;
 
 import javax.persistence.*;
+
+import java.math.BigDecimal;
 
 import static javax.persistence.GenerationType.IDENTITY;
 import static javax.persistence.InheritanceType.SINGLE_TABLE;
@@ -31,6 +34,8 @@ public abstract class Product {
   @JsonProperty(value = "IBAN")
   private String IBAN;
 
-  private Double balance;
+  @Convert(converter = BigDecimalConverter.class)
+  @Column(name = "balance")
+  private BigDecimal balance;
   private Double interest;
 }
