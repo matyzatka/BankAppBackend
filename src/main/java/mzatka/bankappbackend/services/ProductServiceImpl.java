@@ -1,5 +1,7 @@
 package mzatka.bankappbackend.services;
 
+import mzatka.bankappbackend.models.dtos.TransactionDto;
+import mzatka.bankappbackend.models.dtos.TransferDto;
 import mzatka.bankappbackend.models.entities.Account;
 import mzatka.bankappbackend.models.entities.Customer;
 import mzatka.bankappbackend.models.entities.Product;
@@ -88,6 +90,77 @@ public class ProductServiceImpl implements ProductService {
     } catch (Exception e) {
       System.err.println("Error occurred, when trying to increase amounts on saving accounts.");
       System.out.println(e.getMessage());
+    }
+  }
+
+  @Override
+  public Product getProductByIban(String iban) {
+    return productRepository.findAll().stream()
+        .filter(product -> product.getIBAN().equals(iban))
+        .findFirst()
+        .orElse(null);
+  }
+
+  @Override
+  public boolean ibanNotExists(String iban) {
+    return getProductByIban(iban) == null;
+  }
+
+  @Override
+  public boolean hasSufficientFunds(TransferDto transferDto) {
+    double remainder =
+        getProductByIban(transferDto.getIban())
+            .getBalance()
+            .subtract(BigDecimal.valueOf(transferDto.getAmount()))
+            .doubleValue();
+    return remainder >= 0;
+  }
+
+  @Override
+  public boolean hasSufficientFunds(TransactionDto transactionDto) {
+    double remainder =
+        getProductByIban(transactionDto.getSendingIban())
+            .getBalance()
+            .subtract(BigDecimal.valueOf(transactionDto.getAmount()))
+            .doubleValue();
+    return remainder >= 0;
+  }
+
+  @Override
+  public double depositCashAndReturnBalance(TransferDto transferDto) {
+    Product product = getProductByIban(transferDto.getIban());
+    product.setBalance(product.getBalance().add(BigDecimal.valueOf(transferDto.getAmount())));
+    productRepository.save(product);
+    return product.getBalance().doubleValue();
+  }
+
+  @Override
+  public double withdrawCashAndReturnBalance(TransferDto transferDto) {
+    Product product = getProductByIban(transferDto.getIban());
+    product.setBalance(product.getBalance().subtract(BigDecimal.valueOf(transferDto.getAmount())));
+    productRepository.save(product);
+    return product.getBalance().doubleValue();
+  }
+
+  @Override
+  public boolean productNotBelongsToLoggedCustomer(String iban, Customer customer) {
+    return !getProductByIban(iban).getAccount().getCustomer().equals(customer);
+  }
+
+  @Override
+  public boolean transactionCompleted(TransactionDto transactionDto) {
+    try {
+      Product sender = getProductByIban(transactionDto.getSendingIban());
+      Product receiver = getProductByIban(transactionDto.getReceivingIban());
+      sender.setBalance(
+          sender.getBalance().subtract(BigDecimal.valueOf(transactionDto.getAmount())));
+      receiver.setBalance(
+          receiver.getBalance().add(BigDecimal.valueOf(transactionDto.getAmount())));
+      productRepository.saveAll(List.of(sender, receiver));
+      return true;
+    } catch (Exception e) {
+      System.err.println(e.getMessage());
+      return false;
     }
   }
 }

@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class ConfirmationPasswordDto {
+public class ConfirmationPasswordDto implements Dto {
 
   @NotNull @NotBlank private String password;
 }

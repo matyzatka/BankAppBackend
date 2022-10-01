@@ -1,5 +1,7 @@
 package mzatka.bankappbackend.services;
 
+import mzatka.bankappbackend.models.dtos.TransactionDto;
+import mzatka.bankappbackend.models.dtos.TransferDto;
 import mzatka.bankappbackend.models.entities.Account;
 import mzatka.bankappbackend.models.entities.Customer;
 import mzatka.bankappbackend.models.entities.Product;
@@ -14,4 +16,20 @@ public interface ProductService {
   boolean deletedProduct(Customer customer, String iban);
 
   void creditTheInterestOnSavingsAccounts();
+
+  Product getProductByIban(String iban);
+
+  boolean ibanNotExists(String iban);
+
+  boolean hasSufficientFunds(TransferDto transferDto);
+
+  boolean hasSufficientFunds(TransactionDto transactionDto);
+
+  double depositCashAndReturnBalance(TransferDto transferDto);
+
+  double withdrawCashAndReturnBalance(TransferDto transferDto);
+
+  boolean productNotBelongsToLoggedCustomer(String iban, Customer customer);
+
+  boolean transactionCompleted(TransactionDto transactionDto);
 }

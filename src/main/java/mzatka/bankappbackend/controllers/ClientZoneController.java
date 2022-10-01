@@ -33,6 +33,32 @@ public class ClientZoneController {
     return ResponseEntity.ok(customerDto);
   }
 
+  @PostMapping("/pay")
+  public ResponseEntity<Dto> makeTransaction(
+      @RequestHeader(name = "Authorization") String bearerToken,
+      @RequestBody @Valid TransactionDto transactionDto) {
+    Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
+    if (productService.ibanNotExists(transactionDto.getSendingIban())) {
+      return ResponseEntity.badRequest().body(new MessageDto("Sender IBAN does not exist."));
+    }
+    if (productService.ibanNotExists(transactionDto.getReceivingIban())) {
+      return ResponseEntity.badRequest().body(new MessageDto("Receiver IBAN does not exist."));
+    }
+    if (productService.productNotBelongsToLoggedCustomer(
+        transactionDto.getSendingIban(), customer)) {
+      return ResponseEntity.badRequest()
+          .body(new MessageDto("You are not authorized to send money from this account."));
+    }
+    if (!productService.hasSufficientFunds(transactionDto)) {
+      return ResponseEntity.badRequest()
+          .body(new MessageDto("Insufficient funds for making a transaction."));
+    }
+    if (productService.transactionCompleted(transactionDto)) {
+      return ResponseEntity.ok(new MessageDto("Transaction successful."));
+    }
+    return ResponseEntity.badRequest().body(new MessageDto("Unknown error. Try again."));
+  }
+
   @PutMapping("/update")
   public ResponseEntity<Dto> updateCustomer(
       @RequestHeader(name = "Authorization") String bearerToken,
