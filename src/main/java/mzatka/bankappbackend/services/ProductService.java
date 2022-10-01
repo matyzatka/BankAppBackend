@@ -13,5 +13,5 @@ public interface ProductService {
 
   boolean deletedProduct(Customer customer, String iban);
 
-    void creditTheInterestOnSavingsAccounts();
+  void creditTheInterestOnSavingsAccounts();
 }

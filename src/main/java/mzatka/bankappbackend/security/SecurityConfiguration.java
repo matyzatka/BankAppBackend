@@ -25,12 +25,12 @@ public class SecurityConfiguration {
 
   @Bean
   public BCryptPasswordEncoder bCryptPasswordEncoder() {
-    return new BCryptPasswordEncoder(15);
+    return new BCryptPasswordEncoder();
   }
 
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
-    return (web) -> web.ignoring().antMatchers("/login", "/sign-up");
+    return (web) -> web.ignoring().antMatchers("/auth/login", "/auth/sign-up");
   }
 
   @Bean

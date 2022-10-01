@@ -30,8 +30,7 @@ public abstract class Product {
   @Enumerated(EnumType.STRING)
   private ProductType productType;
 
-  @JsonIgnore
-  @ManyToOne private Account account;
+  @JsonIgnore @ManyToOne private Account account;
 
   @JsonProperty(value = "IBAN")
   private String IBAN;
@@ -43,8 +42,7 @@ public abstract class Product {
   @Enumerated(value = EnumType.STRING)
   private Currency currency;
 
-  @JsonIgnore
-  private BigDecimal interestRate;
+  @JsonIgnore private BigDecimal interestRate;
 
   private String interestRating;
 }
