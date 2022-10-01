@@ -66,7 +66,7 @@ public class BeanConfig {
 
       customerService.registerNewCustomer(
           new NewCustomerDto(
-              "matous.zatka@gmail.com",
+              "peter.spisak@gmail.com",
               "qreitos",
               "password",
               "Peter",
