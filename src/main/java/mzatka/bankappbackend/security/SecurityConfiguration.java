@@ -43,7 +43,7 @@ public class SecurityConfiguration {
     httpSecurity.csrf().disable();
     httpSecurity
         .authorizeRequests()
-        .antMatchers("/api/customers/**")
+        .antMatchers("/api/v1/customers/**")
         .hasRole("ADMIN")
         .anyRequest()
         .authenticated();
