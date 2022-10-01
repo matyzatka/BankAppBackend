@@ -156,7 +156,8 @@ public class ProductServiceImpl implements ProductService {
           sender.getBalance().subtract(BigDecimal.valueOf(transactionDto.getAmount())));
       receiver.setBalance(
           receiver.getBalance().add(BigDecimal.valueOf(transactionDto.getAmount())));
-      productRepository.saveAll(List.of(sender, receiver));
+      productRepository.save(sender);
+      productRepository.save(receiver);
       return true;
     } catch (Exception e) {
       System.err.println(e.getMessage());
