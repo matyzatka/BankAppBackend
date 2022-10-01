@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
+import static mzatka.bankappbackend.models.enums.Currency.CZK;
 import static mzatka.bankappbackend.models.enums.ProductType.CREDIT_CARD;
 import static mzatka.bankappbackend.models.enums.ProductType.SAVINGS_ACCOUNT;
 
@@ -33,6 +35,17 @@ public class ProductServiceImpl implements ProductService {
   public Product createProduct(ProductType productType, Account account) {
     Product product = ProductFactory.createProduct(productType);
     product.setAccount(account);
+    product.setCurrency(CZK);
+    if (!Objects.equals(product.getInterestRate(), new BigDecimal("0.00"))) {
+      product.setInterestRating(
+          (product
+                  .getInterestRate()
+                  .multiply(BigDecimal.valueOf(100))
+                  .subtract(BigDecimal.valueOf(100)))
+              + "%");
+    } else {
+      product.setInterestRating((product.getInterestRate().doubleValue() * 100) + "%");
+    }
     String iban;
     do {
       iban = ibanUtilities.generateIBAN();
@@ -64,17 +77,17 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  @Scheduled(initialDelay = 5000, fixedRate = 5000)
+  @Scheduled(initialDelay = 10000, fixedRate = 10000)
   public void creditTheInterestOnSavingsAccounts() {
     try {
       productRepository.findAll().stream()
           .filter(product -> product.getProductType().equals(SAVINGS_ACCOUNT))
           .forEach(
               product ->
-                  product.setBalance(
-                      product.getBalance().multiply(BigDecimal.valueOf(product.getInterest()))));
+                  product.setBalance(product.getBalance().multiply(product.getInterestRate())));
     } catch (Exception e) {
-      System.out.println("error in scheduled task");
+      System.err.println("Error occurred, when trying to increase amounts on saving accounts.");
+      System.out.println(e.getMessage());
     }
   }
 }

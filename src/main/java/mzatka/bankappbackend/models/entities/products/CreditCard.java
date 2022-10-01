@@ -14,6 +14,6 @@ public class CreditCard extends Product {
   public CreditCard() {
     this.setProductType(CREDIT_CARD);
     this.setBalance(new BigDecimal("0.00"));
-    this.setInterest(0.0);
+    this.setInterestRate(new BigDecimal("0.00"));
   }
 }

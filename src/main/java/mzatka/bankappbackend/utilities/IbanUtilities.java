@@ -29,6 +29,6 @@ public class IbanUtilities {
   public String generateIBAN() {
     return IntStream.range(0, 10)
         .mapToObj(i -> String.valueOf((int) (Math.random() * 9)))
-        .collect(Collectors.joining("", "", "/0999"));
+        .collect(Collectors.joining("", "", "/0090"));
   }
 }

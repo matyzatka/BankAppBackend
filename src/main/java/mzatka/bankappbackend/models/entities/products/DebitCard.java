@@ -13,6 +13,6 @@ public class DebitCard extends Product {
   public DebitCard() {
     this.setProductType(DEBIT_CARD);
     this.setBalance(new BigDecimal("0.00"));
-    this.setInterest(0.0);
+    this.setInterestRate(new BigDecimal("0.00"));
   }
 }
