@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static mzatka.bankappbackend.models.enums.Currency.CZK;
-import static mzatka.bankappbackend.models.enums.ProductType.CREDIT_CARD;
-import static mzatka.bankappbackend.models.enums.ProductType.SAVINGS_ACCOUNT;
+import static mzatka.bankappbackend.models.enums.ProductType.*;
 
 @Service
 @Transactional
@@ -81,15 +80,18 @@ public class ProductServiceImpl implements ProductService {
   @Override
   @Scheduled(initialDelay = 10000, fixedRate = 10000)
   public void creditTheInterestOnSavingsAccounts() {
-    try {
-      productRepository.findAll().stream()
-          .filter(product -> product.getProductType().equals(SAVINGS_ACCOUNT))
-          .forEach(
-              product ->
-                  product.setBalance(product.getBalance().multiply(product.getInterestRate())));
-    } catch (Exception e) {
-      System.err.println("Error occurred, when trying to increase amounts on saving accounts.");
-      System.out.println(e.getMessage());
+    List<Product> products = productRepository.findAll();
+    if (!products.isEmpty()) {
+      try {
+        products.stream()
+            .filter(product -> product.getProductType().equals(SAVINGS_ACCOUNT))
+            .forEach(
+                product ->
+                    product.setBalance(product.getBalance().multiply(product.getInterestRate())));
+      } catch (Exception e) {
+        System.err.println("Error occurred, when trying to increase amounts on saving accounts.");
+        System.out.println(e.getMessage());
+      }
     }
   }
 
@@ -131,6 +133,7 @@ public class ProductServiceImpl implements ProductService {
     Product product = getProductByIban(transferDto.getIban());
     product.setBalance(product.getBalance().add(BigDecimal.valueOf(transferDto.getAmount())));
     productRepository.save(product);
+    synchronizeAccount(product);
     return product.getBalance().doubleValue();
   }
 
@@ -139,6 +142,7 @@ public class ProductServiceImpl implements ProductService {
     Product product = getProductByIban(transferDto.getIban());
     product.setBalance(product.getBalance().subtract(BigDecimal.valueOf(transferDto.getAmount())));
     productRepository.save(product);
+    synchronizeAccount(product);
     return product.getBalance().doubleValue();
   }
 
@@ -157,11 +161,35 @@ public class ProductServiceImpl implements ProductService {
       receiver.setBalance(
           receiver.getBalance().add(BigDecimal.valueOf(transactionDto.getAmount())));
       productRepository.save(sender);
+      synchronizeAccount(sender);
       productRepository.save(receiver);
+      synchronizeAccount(receiver);
       return true;
     } catch (Exception e) {
       System.err.println(e.getMessage());
       return false;
+    }
+  }
+
+  @Override
+  public void synchronizeAccount(Product product) {
+    if (product.getProductType().equals(CHECKING_ACCOUNT)) {
+      product.getAccount().getProducts().stream()
+          .filter(p -> p.getProductType().equals(DEBIT_CARD))
+          .forEach(
+              p -> {
+                p.setBalance(product.getBalance());
+                productRepository.save(p);
+              });
+    }
+    if (product.getProductType().equals(DEBIT_CARD)) {
+      product.getAccount().getProducts().stream()
+          .filter(p -> p.getProductType().equals(CHECKING_ACCOUNT))
+          .forEach(
+              p -> {
+                p.setBalance(product.getBalance());
+                productRepository.save(p);
+              });
     }
   }
 }

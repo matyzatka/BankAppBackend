@@ -1,28 +1,22 @@
 package mzatka.bankappbackend.utilities;
 
-import mzatka.bankappbackend.models.entities.Account;
-import mzatka.bankappbackend.models.entities.Customer;
-import mzatka.bankappbackend.repositories.CustomerRepository;
+import mzatka.bankappbackend.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
 public class IbanUtilities {
 
-  private final CustomerRepository customerRepository;
+  private final ProductRepository productRepository;
 
-  public IbanUtilities(CustomerRepository customerRepository) {
-    this.customerRepository = customerRepository;
+  public IbanUtilities(ProductRepository productRepository) {
+    this.productRepository = productRepository;
   }
 
   public boolean isIbanAvailable(String iban) {
-    return customerRepository.findAll().stream()
-        .map(Customer::getAccount)
-        .map(Account::getProducts)
-        .flatMap(Collection::stream)
+    return productRepository.findAll().stream()
         .noneMatch(product -> product.getIBAN().equals(iban));
   }
 

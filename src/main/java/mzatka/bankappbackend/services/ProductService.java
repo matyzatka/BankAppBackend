@@ -32,4 +32,6 @@ public interface ProductService {
   boolean productNotBelongsToLoggedCustomer(String iban, Customer customer);
 
   boolean transactionCompleted(TransactionDto transactionDto);
+
+  void synchronizeAccount(Product product);
 }
