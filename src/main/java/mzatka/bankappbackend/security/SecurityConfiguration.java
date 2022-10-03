@@ -18,12 +18,6 @@ public class SecurityConfiguration {
 
   public static final int TOKEN_EXPIRATION_TIME = 3600000;
 
-  private final AuthenticationConfiguration configuration;
-
-  public SecurityConfiguration(AuthenticationConfiguration configuration) {
-    this.configuration = configuration;
-  }
-
   @Bean
   public BCryptPasswordEncoder bCryptPasswordEncoder() {
     return new BCryptPasswordEncoder();
@@ -32,11 +26,6 @@ public class SecurityConfiguration {
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
     return (web) -> web.ignoring().antMatchers("/auth/login", "/auth/sign-up");
-  }
-
-  @Bean
-  public AuthenticationManager authenticationManagerBean() throws Exception {
-    return configuration.getAuthenticationManager();
   }
 
   @Bean

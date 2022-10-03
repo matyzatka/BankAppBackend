@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.4'
+    id 'org.springframework.boot' version '2.7.3'
     id 'io.spring.dependency-management' version '1.0.14.RELEASE'
     id 'java'
     id 'jacoco'
@@ -59,6 +59,7 @@ jacocoTestReport {
         xml.required = false
         html.required = false
         csv.required = true
+        csv.enabled(true)
         csv.outputLocation = file("build/reports/jacoco/test/jacocoTestReport.csv")
     }
 }
@@ -82,10 +83,4 @@ checkstyleMain {
 }
 checkstyleTest {
     source = 'src/test/java'
-}
-
-jacocoTestReport {
-    reports {
-        csv.enabled true
-    }
 }
