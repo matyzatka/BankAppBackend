@@ -1,4 +1,4 @@
-<img src="https://img.shields.io/github/workflow/status/matyzatka/BankAppBackend/Java%20CI%20with%20Gradle?style=plastic"> <img src="https://img.shields.io/github/deployments/matyzatka/BankAppBackend/matyzatka-bank-app-backend?style=plastic"> <img src="https://img.shields.io/github/languages/top/matyzatka/BankAppBackend?style=plastic"> <img alt="Security Headers" src="https://img.shields.io/security-headers?style=plastic&url=https%3A%2F%2Fmatyzatka-bank-app-backend.herokuapp.com%2F">
+<img src="https://img.shields.io/github/workflow/status/matyzatka/BankAppBackend/Java%20CI%20with%20Gradle?style=plastic"> <img src="https://img.shields.io/github/deployments/matyzatka/BankAppBackend/matyzatka-bank-app-backend?style=plastic"> <img alt="Security Headers" src="https://img.shields.io/security-headers?style=plastic&url=https%3A%2F%2Fmatyzatka-bank-app-backend.herokuapp.com%2F"> <img src="https://img.shields.io/github/languages/top/matyzatka/BankAppBackend?style=plastic"> 
 
 # BankAppBackend
 
