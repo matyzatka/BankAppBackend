@@ -87,13 +87,13 @@ public class ClientZoneController {
     }
   }
 
-  @PostMapping("/add-product/{productName}")
+  @PostMapping("/add-product")
   public ResponseEntity<Dto> addProductToCustomer(
       @RequestHeader(name = "Authorization") String bearerToken,
-      @PathVariable(name = "productName") String productName,
-      @RequestBody @Valid ConfirmationPasswordDto confirmationPasswordDto) {
+      @RequestBody @Valid AddProductDto addProductDto) {
     Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
-    String inputPassword = confirmationPasswordDto.getPassword();
+    String productName = addProductDto.getProductName();
+    String inputPassword = addProductDto.getPassword();
     String storedPassword = customer.getPassword();
     if (!customerService.passwordIsCorrect(inputPassword, storedPassword)) {
       return ResponseEntity.badRequest().body(new MessageDto("Incorrect password."));

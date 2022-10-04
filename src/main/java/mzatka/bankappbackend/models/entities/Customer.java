@@ -37,4 +37,13 @@ public class Customer {
 
   @ManyToMany(fetch = FetchType.EAGER)
   private List<Role> roles = new ArrayList<>();
+
+  public Customer(String username) {
+    this.username = username;
+  }
+
+  public Customer(String username, String email) {
+    this.username = username;
+    this.email = email;
+  }
 }
