@@ -5,7 +5,6 @@ import mzatka.bankappbackend.models.dtos.NewCustomerDto;
 import mzatka.bankappbackend.models.dtos.TransferDto;
 import mzatka.bankappbackend.repositories.ProductRepository;
 import mzatka.bankappbackend.services.CustomerService;
-import mzatka.bankappbackend.services.ProductService;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,14 +79,13 @@ class AtmControllerTest {
         .andDo(print());
 
     mockMvc
-            .perform(
-                    post("/atm/withdraw")
-                            .header("Authorization", token)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(
-                                    objectMapper.writeValueAsString(new TransferDto(iban, 500))))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message", Is.is("IBAN does not exist.")))
-            .andDo(print());
+        .perform(
+            post("/atm/withdraw")
+                .header("Authorization", token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new TransferDto(iban, 500))))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message", Is.is("IBAN does not exist.")))
+        .andDo(print());
   }
 }

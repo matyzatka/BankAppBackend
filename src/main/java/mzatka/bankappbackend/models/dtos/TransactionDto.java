@@ -13,6 +13,4 @@ public class TransactionDto implements Dto {
   @NotNull @NotBlank private String sendingIban;
   @NotNull @NotBlank private String receivingIban;
   @NotNull private Double amount;
-
-
 }

@@ -15,8 +15,7 @@ public class CustomExceptionHandler {
   @ExceptionHandler(CustomerAlreadyExistsException.class)
   @ResponseStatus(value = HttpStatus.CONFLICT)
   public ErrorResponseDto handleCustomerAlreadyExistsException(CustomerAlreadyExistsException e) {
-    return new ErrorResponseDto(
-        CUSTOMER_ALREADY_EXISTS_EXCEPTION_MESSAGE, e.getMessage());
+    return new ErrorResponseDto(CUSTOMER_ALREADY_EXISTS_EXCEPTION_MESSAGE, e.getMessage());
   }
 
   @ExceptionHandler(IncorrectPasswordException.class)
@@ -34,8 +33,7 @@ public class CustomExceptionHandler {
   @ExceptionHandler(InvalidProductNameException.class)
   @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
   public ErrorResponseDto handleInvalidProductNameException(InvalidProductNameException e) {
-    return new ErrorResponseDto(
-        INVALID_PRODUCT_NAME_EXCEPTION_MESSAGE, e.getMessage());
+    return new ErrorResponseDto(INVALID_PRODUCT_NAME_EXCEPTION_MESSAGE, e.getMessage());
   }
 
   @ExceptionHandler(NoSuchCustomerException.class)
@@ -47,22 +45,19 @@ public class CustomExceptionHandler {
   @ExceptionHandler(NoSuchProductWithIbanException.class)
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   public ErrorResponseDto handleNoSuchProductWithIbanException(NoSuchProductWithIbanException e) {
-    return new ErrorResponseDto(
-        NO_SUCH_PRODUCT_WITH_IBAN_EXCEPTION_MESSAGE, e.getMessage());
+    return new ErrorResponseDto(NO_SUCH_PRODUCT_WITH_IBAN_EXCEPTION_MESSAGE, e.getMessage());
   }
 
   @ExceptionHandler(UnauthorizedAccountUsageException.class)
   @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
   public ErrorResponseDto handleUnauthorizedAccountUsageException(
       UnauthorizedAccountUsageException e) {
-    return new ErrorResponseDto(
-        UNAUTHORIZED_ACCOUNT_USAGE_EXCEPTION_MESSAGE, e.getMessage());
+    return new ErrorResponseDto(UNAUTHORIZED_ACCOUNT_USAGE_EXCEPTION_MESSAGE, e.getMessage());
   }
 
   @ExceptionHandler(UnknownErrorException.class)
   @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
   public ErrorResponseDto handleUnknownErrorException(UnknownErrorException e) {
-    return new ErrorResponseDto(
-        UNKNOWN_ERROR_EXCEPTION_MESSAGE, e.getMessage());
+    return new ErrorResponseDto(UNKNOWN_ERROR_EXCEPTION_MESSAGE, e.getMessage());
   }
 }
