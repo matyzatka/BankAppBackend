@@ -1,4 +1,4 @@
-package mzatka.bankappbackend.configuration;
+package mzatka.bankappbackend.exceptions;
 
 public final class ExceptionMessageConfiguration {
 

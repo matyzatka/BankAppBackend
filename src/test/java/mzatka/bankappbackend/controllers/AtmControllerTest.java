@@ -75,7 +75,6 @@ class AtmControllerTest {
                 .content(
                     objectMapper.writeValueAsString(new TransferDto("non_existing_iban", 500))))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.message", Is.is("IBAN does not exist.")))
         .andDo(print());
 
     mockMvc
@@ -85,7 +84,6 @@ class AtmControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new TransferDto(iban, 500))))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.message", Is.is("IBAN does not exist.")))
         .andDo(print());
   }
 }

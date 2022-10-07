@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import static mzatka.bankappbackend.configuration.ExceptionMessageConfiguration.*;
+import static mzatka.bankappbackend.exceptions.ExceptionMessageConfiguration.*;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {
