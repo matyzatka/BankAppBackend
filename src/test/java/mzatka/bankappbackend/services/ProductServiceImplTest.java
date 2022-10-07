@@ -1,5 +1,7 @@
 package mzatka.bankappbackend.services;
 
+import mzatka.bankappbackend.models.dtos.TransactionDto;
+import mzatka.bankappbackend.models.dtos.TransferDto;
 import mzatka.bankappbackend.models.entities.Account;
 import mzatka.bankappbackend.models.entities.Customer;
 import mzatka.bankappbackend.models.entities.Product;
@@ -11,9 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.util.Objects;
 
-import static mzatka.bankappbackend.models.enums.ProductType.CHECKING_ACCOUNT;
-import static mzatka.bankappbackend.models.enums.ProductType.CREDIT_CARD;
+import static mzatka.bankappbackend.models.enums.ProductType.*;
+import static org.awaitility.Awaitility.await;
+import static org.awaitility.Durations.TWO_SECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -58,6 +62,40 @@ class ProductServiceImplTest {
   }
 
   @Test
+  public void money_are_being_credited_by_interest_rate() {
+    String senderIban = "0000000/0000";
+    Customer sender = new Customer("Fred");
+    customerService.saveCustomer(sender);
+    Account senderAccount = accountService.createNewAccount(sender);
+    senderAccount.getProducts().add(productService.createProduct(SAVINGS_ACCOUNT, senderAccount));
+    accountRepository.save(senderAccount);
+    sender.setAccount(senderAccount);
+    sender.getAccount().getProducts().stream()
+        .filter(product -> product.getProductType().equals(SAVINGS_ACCOUNT))
+        .forEach(
+            product -> {
+              product.setBalance(BigDecimal.valueOf(1000));
+              product.setIBAN(senderIban);
+            });
+    productService.creditTheInterestOnSavingsAccounts();
+    await()
+        .atMost(TWO_SECONDS)
+        .untilAsserted(
+            () -> {
+              assertTrue(
+                  1000
+                      < Objects.requireNonNull(
+                              sender.getAccount().getProducts().stream()
+                                  .filter(
+                                      product -> product.getProductType().equals(SAVINGS_ACCOUNT))
+                                  .findFirst()
+                                  .orElse(null))
+                          .getBalance()
+                          .intValue());
+            });
+  }
+
+  @Test
   public void returns_product_by_iban() {
     String testIban = "0000000/0000";
     Customer customer = new Customer("Fred");
@@ -73,5 +111,77 @@ class ProductServiceImplTest {
   public void returns_true_if_IBAN_not_exists() {
     String iban = "non-existing";
     assertTrue(productService.ibanNotExists(iban));
+  }
+
+  @Test
+  @Transactional
+  public void returns_true_if_transaction_completed() {
+    String senderIban = "0000000/0000";
+    Customer sender = new Customer("Fred");
+    customerService.saveCustomer(sender);
+    Account senderAccount = accountService.createNewAccount(sender);
+    accountRepository.save(senderAccount);
+    sender.setAccount(senderAccount);
+    sender.getAccount().getProducts().stream()
+        .filter(product -> product.getProductType().equals(DEBIT_CARD))
+        .forEach(
+            product -> {
+              product.setBalance(BigDecimal.valueOf(1000));
+              product.setIBAN(senderIban);
+            });
+
+    String receiverIban = "1000000/0000";
+    Customer receiver = new Customer("Frank");
+    customerService.saveCustomer(receiver);
+    Account receiverAccount = accountService.createNewAccount(receiver);
+    accountRepository.save(receiverAccount);
+    receiver.setAccount(receiverAccount);
+    receiver.getAccount().getProducts().stream()
+        .filter(product -> product.getProductType().equals(CHECKING_ACCOUNT))
+        .forEach(product -> product.setIBAN(receiverIban));
+    assertTrue(productService.productNotBelongsToLoggedCustomer(senderIban, receiver));
+    TransactionDto transactionDto = new TransactionDto(senderIban, receiverIban, 500.0);
+    assertTrue(productService.transactionCompleted(transactionDto));
+    transactionDto.setAmount(null);
+    assertFalse(productService.transactionCompleted(transactionDto));
+  }
+
+  @Test
+  public void returns_true_if_has_sufficient_funds() {
+    String senderIban = "0000000/0000";
+    Customer sender = new Customer("Fred");
+    customerService.saveCustomer(sender);
+    Account senderAccount = accountService.createNewAccount(sender);
+    accountRepository.save(senderAccount);
+    sender.setAccount(senderAccount);
+    sender.getAccount().getProducts().stream()
+        .filter(product -> product.getProductType().equals(DEBIT_CARD))
+        .forEach(
+            product -> {
+              product.setBalance(BigDecimal.valueOf(1000));
+              product.setIBAN(senderIban);
+            });
+    assertTrue(
+        productService.hasSufficientFunds(new TransactionDto(senderIban, "06468497/0641", 500.0)));
+    assertTrue(productService.hasSufficientFunds(new TransferDto(senderIban, 500)));
+  }
+
+  @Test
+  public void can_deposit_and_withdraw_cash() {
+    String iban = "0000000/0000";
+    Customer customer = new Customer("Fred");
+    customerService.saveCustomer(customer);
+    Account senderAccount = accountService.createNewAccount(customer);
+    accountRepository.save(senderAccount);
+    customer.setAccount(senderAccount);
+    customer.getAccount().getProducts().stream()
+        .filter(product -> product.getProductType().equals(CHECKING_ACCOUNT))
+        .forEach(
+            product -> {
+              product.setBalance(BigDecimal.valueOf(1000));
+              product.setIBAN(iban);
+            });
+    assertEquals(1500.0, productService.depositCashAndReturnBalance(new TransferDto(iban, 500)));
+    assertEquals(0, productService.withdrawCashAndReturnBalance(new TransferDto(iban, 1500)));
   }
 }

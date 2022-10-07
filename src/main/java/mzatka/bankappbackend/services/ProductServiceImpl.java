@@ -78,20 +78,15 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  @Scheduled(initialDelay = 10000, fixedRate = 10000)
+  @Scheduled(initialDelay = 1000, fixedRate = 1000)
   public void creditTheInterestOnSavingsAccounts() {
     List<Product> products = productRepository.findAll();
     if (!products.isEmpty()) {
-      try {
-        products.stream()
-            .filter(product -> product.getProductType().equals(SAVINGS_ACCOUNT))
-            .forEach(
-                product ->
-                    product.setBalance(product.getBalance().multiply(product.getInterestRate())));
-      } catch (Exception e) {
-        System.err.println("Error occurred, when trying to increase amounts on saving accounts.");
-        System.out.println(e.getMessage());
-      }
+      products.stream()
+          .filter(product -> product.getProductType().equals(SAVINGS_ACCOUNT))
+          .forEach(
+              product ->
+                  product.setBalance(product.getBalance().multiply(product.getInterestRate())));
     }
   }
 

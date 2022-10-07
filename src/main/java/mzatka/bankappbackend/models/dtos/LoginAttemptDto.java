@@ -9,6 +9,10 @@ import javax.validation.constraints.NotNull;
 public class LoginAttemptDto implements Dto {
 
   @NotBlank @NotNull private String username;
-
   @NotBlank @NotNull private String password;
+
+  public LoginAttemptDto(String username, String password) {
+    this.username = username;
+    this.password = password;
+  }
 }
