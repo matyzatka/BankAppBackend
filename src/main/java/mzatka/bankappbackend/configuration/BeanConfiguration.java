@@ -13,13 +13,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
 @EnableScheduling
-public class BeanConfig {
+public class BeanConfiguration {
 
   private final RoleRepository roleRepository;
   private final CustomerService customerService;
   private final CustomerRepository customerRepository;
 
-  public BeanConfig(
+  public BeanConfiguration(
       RoleRepository roleRepository,
       CustomerService customerService,
       CustomerRepository customerRepository) {

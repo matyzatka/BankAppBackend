@@ -1,5 +1,6 @@
 package mzatka.bankappbackend.controllers;
 
+import mzatka.bankappbackend.exceptions.*;
 import mzatka.bankappbackend.models.dtos.*;
 import mzatka.bankappbackend.models.entities.Customer;
 import mzatka.bankappbackend.services.CustomerService;
@@ -38,25 +39,21 @@ public class ClientZoneController {
       @RequestHeader(name = "Authorization") String bearerToken,
       @RequestBody @Valid TransactionDto transactionDto) {
     Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
-    if (productService.ibanNotExists(transactionDto.getSendingIban())) {
-      return ResponseEntity.badRequest().body(new MessageDto("Sender IBAN does not exist."));
-    }
-    if (productService.ibanNotExists(transactionDto.getReceivingIban())) {
-      return ResponseEntity.badRequest().body(new MessageDto("Receiver IBAN does not exist."));
+    if (productService.ibanNotExists(transactionDto.getSendingIban())
+        || productService.ibanNotExists(transactionDto.getReceivingIban())) {
+      throw new NoSuchProductWithIbanException("/client-zone/pay");
     }
     if (productService.productNotBelongsToLoggedCustomer(
         transactionDto.getSendingIban(), customer)) {
-      return ResponseEntity.badRequest()
-          .body(new MessageDto("You are not authorized to send money from this account."));
+      throw new UnauthorizedAccountUsageException("/client-zone/pay");
     }
     if (!productService.hasSufficientFunds(transactionDto)) {
-      return ResponseEntity.badRequest()
-          .body(new MessageDto("Insufficient funds for making a transaction."));
+      throw new InsufficientFundsException("/client-zone/pay");
     }
     if (productService.transactionCompleted(transactionDto)) {
       return ResponseEntity.ok(new MessageDto("Transaction successful."));
     }
-    return ResponseEntity.badRequest().body(new MessageDto("Unknown error. Try again."));
+    throw new UnknownErrorException("/client-zone/pay");
   }
 
   @PutMapping("/update")
@@ -76,14 +73,14 @@ public class ClientZoneController {
     Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
     if (!customerService.passwordIsCorrect(
         confirmationPasswordDto.getPassword(), customer.getPassword())) {
-      return ResponseEntity.badRequest().body(new MessageDto("Incorrect password."));
+      throw new IncorrectPasswordException("/client-zone/delete");
     }
     try {
       Long id = customer.getId();
       customerService.deleteCustomer(id);
       return ResponseEntity.ok(new MessageDto("Customer deleted successfully."));
     } catch (NullPointerException e) {
-      return ResponseEntity.badRequest().body(new MessageDto("Customer does not exist anymore."));
+      throw new NoSuchCustomerException("/client-zone/delete");
     }
   }
 
@@ -96,18 +93,17 @@ public class ClientZoneController {
     String inputPassword = addProductDto.getPassword();
     String storedPassword = customer.getPassword();
     if (!customerService.passwordIsCorrect(inputPassword, storedPassword)) {
-      return ResponseEntity.badRequest().body(new MessageDto("Incorrect password."));
+      throw new IncorrectPasswordException("/client-zone/add-product");
     }
     if (productService.addedProduct(productName, customer)) {
       customerService.saveCustomer(customer);
       return ResponseEntity.ok(
           new MessageDto(
               String.format(
-                  "Product [%s] successfully added to account of customer %s %s.",
+                  "Product {%s} successfully added to account of customer %s %s.",
                   productName, customer.getFirstName(), customer.getLastName())));
     }
-    return ResponseEntity.badRequest()
-        .body(new MessageDto("Invalid product name. Choose [creditCard] or [savingsAccount]."));
+    throw new InvalidProductNameException("/client-zone/add-product");
   }
 
   @DeleteMapping("/delete-product")
@@ -129,7 +125,6 @@ public class ClientZoneController {
                   "Product with IBAN: %s removed successfully from account of %s %s.",
                   iban, customer.getFirstName(), customer.getLastName())));
     }
-    return ResponseEntity.badRequest()
-        .body(new MessageDto(String.format("No such product with IBAN: %s", iban)));
+    throw new NoSuchProductWithIbanException("/client-zone/delete-product");
   }
 }

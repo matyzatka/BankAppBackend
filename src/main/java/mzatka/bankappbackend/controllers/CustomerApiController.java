@@ -1,5 +1,6 @@
 package mzatka.bankappbackend.controllers;
 
+import mzatka.bankappbackend.exceptions.NoSuchCustomerException;
 import mzatka.bankappbackend.models.dtos.Dto;
 import mzatka.bankappbackend.models.dtos.MessageDto;
 import mzatka.bankappbackend.models.dtos.NewCustomerDto;
@@ -48,9 +49,7 @@ public class CustomerApiController {
       customerService.deleteCustomer(id);
       return ResponseEntity.noContent().build();
     } catch (Exception e) {
-      System.err.println(e.getMessage());
-      return ResponseEntity.badRequest()
-          .body(new MessageDto(String.format("No customer found with id: %d.", id)));
+      throw new NoSuchCustomerException("/api/v1/customers/{id}");
     }
   }
 }

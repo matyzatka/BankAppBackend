@@ -1,5 +1,7 @@
 package mzatka.bankappbackend.controllers;
 
+import mzatka.bankappbackend.exceptions.InsufficientFundsException;
+import mzatka.bankappbackend.exceptions.NoSuchProductWithIbanException;
 import mzatka.bankappbackend.models.dtos.Dto;
 import mzatka.bankappbackend.models.dtos.MessageDto;
 import mzatka.bankappbackend.models.dtos.TransferDto;
@@ -25,7 +27,7 @@ public class AtmController {
   @PostMapping("/deposit")
   public ResponseEntity<Dto> depositCash(@RequestBody @Valid TransferDto transferDto) {
     if (productService.ibanNotExists(transferDto.getIban())) {
-      return ResponseEntity.badRequest().body(new MessageDto("IBAN does not exist."));
+      throw new NoSuchProductWithIbanException("/deposit");
     }
     return ResponseEntity.ok(
         new MessageDto(
@@ -37,11 +39,10 @@ public class AtmController {
   @PostMapping("/withdraw")
   public ResponseEntity<Dto> withdrawCash(@RequestBody @Valid TransferDto transferDto) {
     if (productService.ibanNotExists(transferDto.getIban())) {
-      return ResponseEntity.badRequest().body(new MessageDto("IBAN does not exist."));
+      throw new NoSuchProductWithIbanException("/deposit");
     }
     if (!productService.hasSufficientFunds(transferDto)) {
-      return ResponseEntity.badRequest()
-          .body(new MessageDto("This product does not have sufficient funds."));
+      throw new InsufficientFundsException("/withdraw");
     }
     return ResponseEntity.ok(
         new MessageDto(

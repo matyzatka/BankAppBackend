@@ -1,5 +1,8 @@
 package mzatka.bankappbackend.controllers;
 
+import mzatka.bankappbackend.exceptions.CustomerAlreadyExistsException;
+import mzatka.bankappbackend.exceptions.IncorrectPasswordException;
+import mzatka.bankappbackend.exceptions.NoSuchCustomerException;
 import mzatka.bankappbackend.models.dtos.*;
 import mzatka.bankappbackend.models.entities.Customer;
 import mzatka.bankappbackend.services.CustomerService;
@@ -26,12 +29,7 @@ public class AuthController {
   public ResponseEntity<Dto> signUp(@RequestBody @Valid NewCustomerDto newCustomerDto) {
     if (customerService.customerExistsWithUsernameOrEmail(
         newCustomerDto.getUsername(), newCustomerDto.getEmail())) {
-      return ResponseEntity.status(409)
-          .body(
-              new MessageDto(
-                  String.format(
-                      "User already exists with username: %s, or email: %s.",
-                      newCustomerDto.getUsername(), newCustomerDto.getEmail())));
+      throw new CustomerAlreadyExistsException("/auth/sign-up");
     }
     customerService.registerNewCustomer(newCustomerDto);
     return ResponseEntity.ok(new MessageDto("Registration successful."));
@@ -43,11 +41,10 @@ public class AuthController {
     String password = loginAttemptDto.getPassword();
     Customer customer = customerService.getCustomerByUsername(username);
     if (customer == null) {
-      return ResponseEntity.status(403)
-          .body(new MessageDto(String.format("No such user with username: %s", username)));
+      throw new NoSuchCustomerException("/auth/login");
     }
     if (!customerService.passwordIsCorrect(password, customer.getPassword())) {
-      return ResponseEntity.status(403).body(new MessageDto("Password is not correct."));
+      throw new IncorrectPasswordException("/auth/login");
     }
     User loggingUser = (User) customerService.loadCustomerByUsername(username);
     String token = customerService.getToken(loggingUser);

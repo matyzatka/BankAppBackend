@@ -45,15 +45,6 @@ tasks.named('test') {
 
 jacocoTestReport {
     dependsOn test
-    afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: ["**/models/**"])
-        }))
-    }
-}
-
-jacocoTestReport {
-    dependsOn test
     reports {
         xml.required = false
         html.required = true
@@ -62,6 +53,11 @@ jacocoTestReport {
         html.enabled(true)
         csv.outputLocation = file("build/reports/jacoco/test/jacocoTestReport.csv")
         html.outputLocation = file("build/reports/jacoco/test/jacocoTestReport.html")
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: ["**/models/**", "**/exceptions/**"])
+        }))
     }
 }
 
