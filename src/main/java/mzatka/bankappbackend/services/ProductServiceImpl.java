@@ -8,7 +8,6 @@ import mzatka.bankappbackend.models.entities.Customer;
 import mzatka.bankappbackend.models.entities.Product;
 import mzatka.bankappbackend.models.enums.ProductType;
 import mzatka.bankappbackend.models.factories.ProductFactory;
-import mzatka.bankappbackend.repositories.CustomerRepository;
 import mzatka.bankappbackend.repositories.ProductRepository;
 import mzatka.bankappbackend.utilities.IbanUtilities;
 import org.springframework.scheduling.annotation.Scheduled;
