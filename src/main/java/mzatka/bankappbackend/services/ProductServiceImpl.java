@@ -86,6 +86,7 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
+  @Transactional
   @Scheduled(initialDelay = 1000, fixedRate = 10000)
   public void creditTheInterestOnSavingsAccounts() {
     try {
