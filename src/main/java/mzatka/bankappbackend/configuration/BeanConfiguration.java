@@ -41,39 +41,17 @@ public class BeanConfiguration {
 
       customerService.registerNewCustomer(
           new NewCustomerDto(
-              "matous.zatka@gmail.com",
-              "matyzatka",
+              "user.admin@gmail.com",
+              "admin",
               "password",
-              "Matouš",
-              "Zátka",
+              "Admin",
+              "von Admin",
               "22. 2. 1994",
-              "604 778 881",
-              "Kladno, Oáza 27201"));
+              "312 777 888",
+              "Prague, Center 5000, 27201"));
 
       customerService.addRoleToCustomer(
-          customerRepository.getCustomerByUsername("matyzatka"), "ROLE_ADMIN");
-
-      customerService.registerNewCustomer(
-          new NewCustomerDto(
-              "adamnguyenvan@gmail.com",
-              "adamnguyen",
-              "password",
-              "Adam",
-              "Nguyen",
-              "1. 8. 1998",
-              "608 255 461",
-              "Rimavská Sobota, 33504"));
-
-      customerService.registerNewCustomer(
-          new NewCustomerDto(
-              "peter.spisak@gmail.com",
-              "qreitos",
-              "password",
-              "Peter",
-              "Špišák",
-              "13. 2. 1992",
-              "605 748 133",
-              "Detva, Slovakia, 44468"));
+          customerRepository.getCustomerByUsername("admin"), "ROLE_ADMIN");
     };
   }
 }
