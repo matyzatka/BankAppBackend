@@ -136,13 +136,6 @@ class ClientZoneControllerTest {
             result ->
                 assertTrue(
                     result.getResolvedException() instanceof NoSuchProductWithIbanException));
-
-    mockMvc
-        .perform(
-            post("/client-zone/pay")
-                .header("Authorization", token)
-                .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isBadRequest());
   }
 
   @Test
