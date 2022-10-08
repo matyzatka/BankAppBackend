@@ -1,5 +1,6 @@
 package mzatka.bankappbackend.controllers;
 
+import lombok.RequiredArgsConstructor;
 import mzatka.bankappbackend.exceptions.CustomerAlreadyExistsException;
 import mzatka.bankappbackend.exceptions.IncorrectPasswordException;
 import mzatka.bankappbackend.exceptions.NoSuchCustomerException;
@@ -17,13 +18,10 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
   private final CustomerService customerService;
-
-  public AuthController(CustomerService customerService) {
-    this.customerService = customerService;
-  }
 
   @PostMapping("/sign-up")
   public ResponseEntity<Dto> signUp(@RequestBody @Valid NewCustomerDto newCustomerDto) {

@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.github.cdimascio.dotenv.Dotenv;
+import lombok.RequiredArgsConstructor;
 import mzatka.bankappbackend.models.dtos.NewCustomerDto;
 import mzatka.bankappbackend.models.entities.Customer;
 import mzatka.bankappbackend.models.entities.Role;
@@ -30,23 +31,13 @@ import static mzatka.bankappbackend.security.SecurityConfiguration.TOKEN_EXPIRAT
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
 
   private final BCryptPasswordEncoder passwordEncoder;
   private final AccountService accountService;
   private final CustomerRepository customerRepository;
   private final RoleRepository roleRepository;
-
-  public CustomerServiceImpl(
-      BCryptPasswordEncoder passwordEncoder,
-      AccountService accountService,
-      CustomerRepository customerRepository,
-      RoleRepository roleRepository) {
-    this.passwordEncoder = passwordEncoder;
-    this.accountService = accountService;
-    this.customerRepository = customerRepository;
-    this.roleRepository = roleRepository;
-  }
 
   @Override
   public void registerNewCustomer(NewCustomerDto newCustomerDto) {

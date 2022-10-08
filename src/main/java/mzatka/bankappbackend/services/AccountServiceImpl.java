@@ -1,5 +1,6 @@
 package mzatka.bankappbackend.services;
 
+import lombok.RequiredArgsConstructor;
 import mzatka.bankappbackend.models.entities.Account;
 import mzatka.bankappbackend.models.entities.Customer;
 import mzatka.bankappbackend.repositories.AccountRepository;
@@ -13,15 +14,11 @@ import static mzatka.bankappbackend.models.enums.ProductType.DEBIT_CARD;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
 
   private final ProductService productService;
   private final AccountRepository accountRepository;
-
-  public AccountServiceImpl(ProductService productService, AccountRepository accountRepository) {
-    this.productService = productService;
-    this.accountRepository = accountRepository;
-  }
 
   @Override
   public Account createNewAccount(Customer customer) {

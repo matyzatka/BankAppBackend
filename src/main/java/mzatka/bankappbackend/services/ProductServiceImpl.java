@@ -1,5 +1,6 @@
 package mzatka.bankappbackend.services;
 
+import lombok.RequiredArgsConstructor;
 import mzatka.bankappbackend.models.dtos.TransactionDto;
 import mzatka.bankappbackend.models.dtos.TransferDto;
 import mzatka.bankappbackend.models.entities.Account;
@@ -22,20 +23,11 @@ import static mzatka.bankappbackend.models.enums.Currency.CZK;
 import static mzatka.bankappbackend.models.enums.ProductType.*;
 
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
   private final ProductRepository productRepository;
   private final IbanUtilities ibanUtilities;
-  private final CustomerRepository customerRepository;
-
-  public ProductServiceImpl(
-      ProductRepository productRepository,
-      IbanUtilities ibanUtilities,
-      CustomerRepository customerRepository) {
-    this.productRepository = productRepository;
-    this.ibanUtilities = ibanUtilities;
-    this.customerRepository = customerRepository;
-  }
 
   @Override
   @Transactional

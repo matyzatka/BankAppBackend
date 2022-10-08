@@ -1,5 +1,6 @@
 package mzatka.bankappbackend.controllers;
 
+import lombok.RequiredArgsConstructor;
 import mzatka.bankappbackend.exceptions.NoSuchCustomerException;
 import mzatka.bankappbackend.models.dtos.Dto;
 import mzatka.bankappbackend.models.dtos.MessageDto;
@@ -14,15 +15,11 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/customers")
+@RequiredArgsConstructor
 public class CustomerApiController {
 
   private final DtoService dtoService;
   private final CustomerService customerService;
-
-  public CustomerApiController(DtoService dtoService, CustomerService customerService) {
-    this.dtoService = dtoService;
-    this.customerService = customerService;
-  }
 
   @GetMapping("/all")
   public ResponseEntity<Dto> getAllCustomers() {

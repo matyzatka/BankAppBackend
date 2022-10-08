@@ -1,5 +1,6 @@
 package mzatka.bankappbackend.controllers;
 
+import lombok.RequiredArgsConstructor;
 import mzatka.bankappbackend.exceptions.InsufficientFundsException;
 import mzatka.bankappbackend.exceptions.NoSuchProductWithIbanException;
 import mzatka.bankappbackend.models.dtos.Dto;
@@ -16,13 +17,10 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/atm")
+@RequiredArgsConstructor
 public class AtmController {
 
   private final ProductService productService;
-
-  public AtmController(ProductService productService) {
-    this.productService = productService;
-  }
 
   @PostMapping("/deposit")
   public ResponseEntity<Dto> depositCash(@RequestBody @Valid TransferDto transferDto) {

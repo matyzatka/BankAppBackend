@@ -1,5 +1,6 @@
 package mzatka.bankappbackend.controllers;
 
+import lombok.RequiredArgsConstructor;
 import mzatka.bankappbackend.exceptions.*;
 import mzatka.bankappbackend.models.dtos.*;
 import mzatka.bankappbackend.models.entities.Customer;
@@ -13,18 +14,12 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/client-zone")
+@RequiredArgsConstructor
 public class ClientZoneController {
 
   private final CustomerService customerService;
   private final ProductService productService;
   private final DtoService dtoService;
-
-  public ClientZoneController(
-      CustomerService customerService, ProductService productService, DtoService dtoService) {
-    this.customerService = customerService;
-    this.productService = productService;
-    this.dtoService = dtoService;
-  }
 
   @GetMapping
   public ResponseEntity<Dto> showCustomer(

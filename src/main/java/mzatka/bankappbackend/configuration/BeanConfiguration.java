@@ -1,5 +1,6 @@
 package mzatka.bankappbackend.configuration;
 
+import lombok.RequiredArgsConstructor;
 import mzatka.bankappbackend.models.dtos.NewCustomerDto;
 import mzatka.bankappbackend.models.entities.Role;
 import mzatka.bankappbackend.repositories.CustomerRepository;
@@ -13,20 +14,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
 @EnableScheduling
+@RequiredArgsConstructor
 public class BeanConfiguration {
 
   private final RoleRepository roleRepository;
   private final CustomerService customerService;
   private final CustomerRepository customerRepository;
-
-  public BeanConfiguration(
-      RoleRepository roleRepository,
-      CustomerService customerService,
-      CustomerRepository customerRepository) {
-    this.roleRepository = roleRepository;
-    this.customerService = customerService;
-    this.customerRepository = customerRepository;
-  }
 
   @Bean
   public ModelMapper modelMapper() {

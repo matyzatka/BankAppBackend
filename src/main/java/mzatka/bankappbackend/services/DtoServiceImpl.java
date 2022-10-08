@@ -1,5 +1,6 @@
 package mzatka.bankappbackend.services;
 
+import lombok.RequiredArgsConstructor;
 import mzatka.bankappbackend.models.dtos.AllCustomersDto;
 import mzatka.bankappbackend.models.dtos.CustomerDto;
 import mzatka.bankappbackend.models.entities.Customer;
@@ -10,15 +11,11 @@ import org.springframework.stereotype.Service;
 import static java.util.stream.Collectors.toList;
 
 @Service
+@RequiredArgsConstructor
 public class DtoServiceImpl implements DtoService {
 
   private final ModelMapper modelMapper;
   private final CustomerRepository customerRepository;
-
-  public DtoServiceImpl(ModelMapper modelMapper, CustomerRepository customerRepository) {
-    this.modelMapper = modelMapper;
-    this.customerRepository = customerRepository;
-  }
 
   @Override
   public CustomerDto convertToDto(Customer customer) {
