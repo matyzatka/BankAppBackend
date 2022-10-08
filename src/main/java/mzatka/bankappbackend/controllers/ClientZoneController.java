@@ -70,12 +70,12 @@ public class ClientZoneController {
   public ResponseEntity<Dto> deleteCustomer(
       @RequestHeader(name = "Authorization") String bearerToken,
       @RequestBody @Valid ConfirmationPasswordDto confirmationPasswordDto) {
-    Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
-    if (!customerService.passwordIsCorrect(
-        confirmationPasswordDto.getPassword(), customer.getPassword())) {
-      throw new IncorrectPasswordException("/client-zone/delete");
-    }
     try {
+      Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
+      if (!customerService.passwordIsCorrect(
+          confirmationPasswordDto.getPassword(), customer.getPassword())) {
+        throw new IncorrectPasswordException("/client-zone/delete");
+      }
       Long id = customer.getId();
       customerService.deleteCustomer(id);
       return ResponseEntity.ok(new MessageDto("Customer deleted successfully."));

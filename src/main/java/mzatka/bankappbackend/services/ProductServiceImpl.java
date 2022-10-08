@@ -7,6 +7,7 @@ import mzatka.bankappbackend.models.entities.Customer;
 import mzatka.bankappbackend.models.entities.Product;
 import mzatka.bankappbackend.models.enums.ProductType;
 import mzatka.bankappbackend.models.factories.ProductFactory;
+import mzatka.bankappbackend.repositories.CustomerRepository;
 import mzatka.bankappbackend.repositories.ProductRepository;
 import mzatka.bankappbackend.utilities.IbanUtilities;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,18 +22,23 @@ import static mzatka.bankappbackend.models.enums.Currency.CZK;
 import static mzatka.bankappbackend.models.enums.ProductType.*;
 
 @Service
-@Transactional
 public class ProductServiceImpl implements ProductService {
 
   private final ProductRepository productRepository;
   private final IbanUtilities ibanUtilities;
+  private final CustomerRepository customerRepository;
 
-  public ProductServiceImpl(ProductRepository productRepository, IbanUtilities ibanUtilities) {
+  public ProductServiceImpl(
+      ProductRepository productRepository,
+      IbanUtilities ibanUtilities,
+      CustomerRepository customerRepository) {
     this.productRepository = productRepository;
     this.ibanUtilities = ibanUtilities;
+    this.customerRepository = customerRepository;
   }
 
   @Override
+  @Transactional
   public Product createProduct(ProductType productType, Account account) {
     Product product = ProductFactory.createProduct(productType);
     product.setAccount(account);
@@ -56,6 +62,7 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
+  @Transactional
   public boolean addedProduct(String productName, Customer customer) {
     if (productName.equalsIgnoreCase("creditCard")) {
       customer.getAccount().getProducts().add(createProduct(CREDIT_CARD, customer.getAccount()));
@@ -72,21 +79,26 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
+  @Transactional
   public boolean deletedProduct(Customer customer, String iban) {
     List<Product> products = customer.getAccount().getProducts();
     return products.removeIf(product -> product.getIBAN().equals(iban));
   }
 
   @Override
-  @Scheduled(initialDelay = 1000, fixedRate = 1000)
+  @Scheduled(initialDelay = 1000, fixedRate = 10000)
   public void creditTheInterestOnSavingsAccounts() {
-    List<Product> products = productRepository.findAll();
-    if (!products.isEmpty()) {
-      products.stream()
-          .filter(product -> product.getProductType().equals(SAVINGS_ACCOUNT))
-          .forEach(
-              product ->
-                  product.setBalance(product.getBalance().multiply(product.getInterestRate())));
+    try {
+      List<Product> products = productRepository.findAll();
+      if (!products.isEmpty()) {
+        products.stream()
+            .filter(product -> product.getProductType().equals(SAVINGS_ACCOUNT))
+            .forEach(
+                product ->
+                    product.setBalance(product.getBalance().multiply(product.getInterestRate())));
+      }
+    } catch (Exception e) {
+      System.out.println(e.getLocalizedMessage());
     }
   }
 
@@ -124,6 +136,7 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
+  @Transactional
   public double depositCashAndReturnBalance(TransferDto transferDto) {
     Product product = getProductByIban(transferDto.getIban());
     product.setBalance(product.getBalance().add(BigDecimal.valueOf(transferDto.getAmount())));
@@ -133,6 +146,7 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
+  @Transactional
   public double withdrawCashAndReturnBalance(TransferDto transferDto) {
     Product product = getProductByIban(transferDto.getIban());
     product.setBalance(product.getBalance().subtract(BigDecimal.valueOf(transferDto.getAmount())));
@@ -147,6 +161,7 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
+  @Transactional
   public boolean transactionCompleted(TransactionDto transactionDto) {
     try {
       Product sender = getProductByIban(transactionDto.getSendingIban());
@@ -167,6 +182,7 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
+  @Transactional
   public void synchronizeAccount(Product product) {
     if (product.getProductType().equals(CHECKING_ACCOUNT)) {
       product.getAccount().getProducts().stream()

@@ -5,7 +5,6 @@ import mzatka.bankappbackend.models.dtos.NewCustomerDto;
 import mzatka.bankappbackend.models.dtos.TransferDto;
 import mzatka.bankappbackend.repositories.ProductRepository;
 import mzatka.bankappbackend.services.CustomerService;
-import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,7 +17,6 @@ import java.util.Objects;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest

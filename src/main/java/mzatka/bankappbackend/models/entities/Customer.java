@@ -6,12 +6,14 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
+import static org.hibernate.annotations.CascadeType.ALL;
 
 @Entity
 @Getter
@@ -33,7 +35,9 @@ public class Customer {
   private String phone;
   private String address;
 
-  @OneToOne private Account account;
+  @OneToOne(cascade = CascadeType.ALL)
+  @Cascade(ALL)
+  private Account account;
 
   @ManyToMany(fetch = FetchType.EAGER)
   private List<Role> roles = new ArrayList<>();

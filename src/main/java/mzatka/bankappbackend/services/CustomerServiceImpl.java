@@ -9,6 +9,7 @@ import mzatka.bankappbackend.models.dtos.NewCustomerDto;
 import mzatka.bankappbackend.models.entities.Customer;
 import mzatka.bankappbackend.models.entities.Role;
 import mzatka.bankappbackend.repositories.CustomerRepository;
+import mzatka.bankappbackend.repositories.ProductRepository;
 import mzatka.bankappbackend.repositories.RoleRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -36,16 +37,19 @@ public class CustomerServiceImpl implements CustomerService {
   private final AccountService accountService;
   private final CustomerRepository customerRepository;
   private final RoleRepository roleRepository;
+  private final ProductRepository productRepository;
 
   public CustomerServiceImpl(
       BCryptPasswordEncoder passwordEncoder,
       AccountService accountService,
       CustomerRepository customerRepository,
-      RoleRepository roleRepository) {
+      RoleRepository roleRepository,
+      ProductRepository productRepository) {
     this.passwordEncoder = passwordEncoder;
     this.accountService = accountService;
     this.customerRepository = customerRepository;
     this.roleRepository = roleRepository;
+    this.productRepository = productRepository;
   }
 
   @Override
