@@ -2,6 +2,7 @@ package mzatka.bankappbackend.configuration;
 
 import lombok.RequiredArgsConstructor;
 import mzatka.bankappbackend.models.dtos.NewCustomerDto;
+import mzatka.bankappbackend.models.entities.Customer;
 import mzatka.bankappbackend.models.entities.Role;
 import mzatka.bankappbackend.repositories.CustomerRepository;
 import mzatka.bankappbackend.repositories.RoleRepository;
@@ -45,6 +46,9 @@ public class BeanConfiguration {
 
       customerService.addRoleToCustomer(
           customerRepository.getCustomerByUsername("admin"), "ROLE_ADMIN");
+      Customer customer = customerService.getCustomerByUsername("admin");
+      customer.setEnabled(true);
+      customerService.saveCustomer(customer);
     };
   }
 }
