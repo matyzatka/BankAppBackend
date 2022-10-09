@@ -2,12 +2,13 @@ package mzatka.bankappbackend.services;
 
 import mzatka.bankappbackend.models.dtos.NewCustomerDto;
 import mzatka.bankappbackend.models.entities.Customer;
+import mzatka.bankappbackend.models.entities.VerificationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public interface CustomerService {
 
-  void registerNewCustomer(NewCustomerDto newCustomerDto);
+  Customer registerNewCustomer(NewCustomerDto newCustomerDto);
 
   void addRoleToCustomer(Customer customer, String roleName);
 
@@ -30,4 +31,10 @@ public interface CustomerService {
   String getToken(UserDetails userDetails);
 
   Customer getCustomerFromAuthorizationHeader(String bearerToken);
+
+    Customer getCustomerByVerificationToken(String verificationToken);
+
+    VerificationToken getVerificationToken(String verificationToken);
+
+  void createVerificationToken(Customer customer, String token);
 }

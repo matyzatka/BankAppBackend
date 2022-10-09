@@ -65,4 +65,11 @@ class CustomExceptionHandlerTest {
     assertNotNull(
         customExceptionHandler.handleUnknownErrorException(new UnknownErrorException("msg")));
   }
+
+  @Test
+  void handleInvalidConfirmationTokenException() {
+    assertNotNull(
+        customExceptionHandler.handleInvalidConfirmationTokenException(
+            new InvalidConfirmationTokenException("msg")));
+  }
 }

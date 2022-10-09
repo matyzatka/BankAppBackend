@@ -9,8 +9,10 @@ import lombok.RequiredArgsConstructor;
 import mzatka.bankappbackend.models.dtos.NewCustomerDto;
 import mzatka.bankappbackend.models.entities.Customer;
 import mzatka.bankappbackend.models.entities.Role;
+import mzatka.bankappbackend.models.entities.VerificationToken;
 import mzatka.bankappbackend.repositories.CustomerRepository;
 import mzatka.bankappbackend.repositories.RoleRepository;
+import mzatka.bankappbackend.repositories.VerificationTokenRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,14 +40,17 @@ public class CustomerServiceImpl implements CustomerService {
   private final AccountService accountService;
   private final CustomerRepository customerRepository;
   private final RoleRepository roleRepository;
+  private final VerificationTokenRepository verificationTokenRepository;
 
   @Override
-  public void registerNewCustomer(NewCustomerDto newCustomerDto) {
+  public Customer registerNewCustomer(NewCustomerDto newCustomerDto) {
     Customer customer = new Customer();
     assignValuesToCustomer(customer, newCustomerDto);
     customer.setAccount(accountService.createNewAccount(customer));
     addRoleToCustomer(customer, "ROLE_USER");
+    customer.setEnabled(false);
     customerRepository.save(customer);
+    return customer;
   }
 
   @Override
@@ -152,5 +157,23 @@ public class CustomerServiceImpl implements CustomerService {
     DecodedJWT decodedJWT = verifier.verify(token);
     String username = decodedJWT.getSubject();
     return getCustomerByUsername(username);
+  }
+
+  @Override
+  public Customer getCustomerByVerificationToken(String verificationToken) {
+    return verificationTokenRepository
+        .findVerificationTokenByToken(verificationToken)
+        .getCustomer();
+  }
+
+  @Override
+  public VerificationToken getVerificationToken(String verificationToken) {
+    return verificationTokenRepository.findVerificationTokenByToken(verificationToken);
+  }
+
+  @Override
+  public void createVerificationToken(Customer customer, String token) {
+    VerificationToken verificationToken = new VerificationToken(token, customer);
+    verificationTokenRepository.save(verificationToken);
   }
 }

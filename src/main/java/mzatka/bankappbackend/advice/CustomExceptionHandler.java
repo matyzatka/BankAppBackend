@@ -60,4 +60,11 @@ public class CustomExceptionHandler {
   public ErrorResponseDto handleUnknownErrorException(UnknownErrorException e) {
     return new ErrorResponseDto(UNKNOWN_ERROR_EXCEPTION_MESSAGE, e.getMessage());
   }
+
+  @ExceptionHandler(InvalidConfirmationTokenException.class)
+  @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
+  public ErrorResponseDto handleInvalidConfirmationTokenException(
+      InvalidConfirmationTokenException e) {
+    return new ErrorResponseDto(INVALID_CONFIRMATION_TOKEN_EXCEPTION_MESSAGE, e.getMessage());
+  }
 }

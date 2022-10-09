@@ -39,6 +39,8 @@ public class Customer {
   @Cascade(ALL)
   private Account account;
 
+  private boolean enabled;
+
   @ManyToMany(fetch = FetchType.EAGER)
   private List<Role> roles = new ArrayList<>();
 

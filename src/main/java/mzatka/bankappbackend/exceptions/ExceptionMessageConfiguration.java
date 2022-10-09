@@ -22,4 +22,7 @@ public final class ExceptionMessageConfiguration {
       "Invalid product name. Choose \"creditCard\" or \"savingsAccount\".";
 
   public static final String UNKNOWN_ERROR_EXCEPTION_MESSAGE = "Unknown error. Try again.";
+
+  public static final String INVALID_CONFIRMATION_TOKEN_EXCEPTION_MESSAGE =
+      "Confirmation token is not valid.";
 }
