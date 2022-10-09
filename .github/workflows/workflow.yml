@@ -19,10 +19,10 @@ jobs:
           distribution: 'adopt'
           cache: gradle
       - name: Create env file
-          run: |
-            touch .env
+        run: |
+          touch .env
+          cat .env
             echo JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} >> .env
-            cat .env
       - name: Check style in Main
         run: gradle checkstyleMain
       - name: Check style in Test
