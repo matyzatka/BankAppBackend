@@ -29,13 +29,16 @@ public class RegistrationEventListener implements ApplicationListener<OnRegistra
     customerService.createVerificationToken(customer, token);
     String recipientAddress = customer.getEmail();
     String subject = "Registration Confirmation";
-    String confirmationUrl = "/auth/confirmRegistration?token=" + token;
 
     SimpleMailMessage email = new SimpleMailMessage();
-    email.setFrom("bankapp.backend@seznam.cz");
+    email.setFrom("bankapp.backend@azet.sk");
     email.setTo(recipientAddress);
     email.setSubject(subject);
-    email.setText("http://localhost:8080" + confirmationUrl);
+    email.setText(
+        "Hello, "
+            + customer.getFirstName()
+            + "!\n\n Please use this token for confirmation of your account by POST method (/auth/confirmRegistration?token=[your_token]"
+            + ("\n\n" + token + "\n\nThank you and have a nice day. :)"));
     javaMailSender.send(email);
   }
 }
