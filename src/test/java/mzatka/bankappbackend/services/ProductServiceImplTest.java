@@ -62,40 +62,6 @@ class ProductServiceImplTest {
   }
 
   @Test
-  public void money_are_being_credited_by_interest_rate() {
-    String senderIban = "0000000/0000";
-    Customer sender = new Customer("Fred");
-    customerService.saveCustomer(sender);
-    Account senderAccount = accountService.createNewAccount(sender);
-    senderAccount.getProducts().add(productService.createProduct(SAVINGS_ACCOUNT, senderAccount));
-    accountRepository.save(senderAccount);
-    sender.setAccount(senderAccount);
-    sender.getAccount().getProducts().stream()
-        .filter(product -> product.getProductType().equals(SAVINGS_ACCOUNT))
-        .forEach(
-            product -> {
-              product.setBalance(BigDecimal.valueOf(1000));
-              product.setIBAN(senderIban);
-            });
-    productService.creditTheInterestOnSavingsAccounts();
-    await()
-        .atMost(TWO_SECONDS)
-        .untilAsserted(
-            () -> {
-              assertTrue(
-                  1000
-                      < Objects.requireNonNull(
-                              sender.getAccount().getProducts().stream()
-                                  .filter(
-                                      product -> product.getProductType().equals(SAVINGS_ACCOUNT))
-                                  .findFirst()
-                                  .orElse(null))
-                          .getBalance()
-                          .intValue());
-            });
-  }
-
-  @Test
   public void returns_product_by_iban() {
     String testIban = "0000000/0000";
     Customer customer = new Customer("Fred");

@@ -35,13 +35,6 @@ class CustomerServiceImplTest {
   }
 
   @Test
-  public void returns_customer_by_id() {
-    Customer customer = new Customer();
-    customerRepository.save(customer);
-    assertNotNull(customerService.getCustomerById(1L));
-  }
-
-  @Test
   public void throws_Exception_when_customer_not_found() {
     assertThrows(IllegalStateException.class, () -> customerService.getCustomerById(99L));
   }
