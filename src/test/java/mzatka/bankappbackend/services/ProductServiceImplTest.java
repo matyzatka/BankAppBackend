@@ -13,11 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import static mzatka.bankappbackend.models.enums.ProductType.*;
-import static org.awaitility.Awaitility.await;
-import static org.awaitility.Durations.TWO_SECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
