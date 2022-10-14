@@ -16,6 +16,7 @@ public class IbanUtilities {
   }
 
   public boolean isIbanAvailable(String iban) {
+    assert productRepository.findAll() != null;
     return productRepository.findAll().stream()
         .noneMatch(product -> product.getIBAN().equals(iban));
   }

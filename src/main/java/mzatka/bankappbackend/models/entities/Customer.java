@@ -19,6 +19,7 @@ import static org.hibernate.annotations.CascadeType.ALL;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "customer")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Customer {
 

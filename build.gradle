@@ -1,9 +1,16 @@
+buildscript {
+    dependencies {
+        classpath "org.flywaydb:flyway-mysql:8.2.2"
+    }
+}
+
 plugins {
     id 'org.springframework.boot' version '2.7.3'
     id 'io.spring.dependency-management' version '1.0.14.RELEASE'
     id 'java'
     id 'jacoco'
     id 'checkstyle'
+    id "org.flywaydb.flyway" version "9.4.0"
 }
 
 group = 'mzatka'
@@ -20,6 +27,10 @@ repositories {
 }
 
 dependencies {
+    implementation "org.flywaydb:flyway-sqlserver"
+    implementation "org.flywaydb:flyway-mysql"
+    implementation 'org.flywaydb:flyway-mysql:9.4.0'
+    implementation "org.flywaydb:flyway-core:9.4.0"
     implementation 'org.modelmapper:modelmapper:3.1.0'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -37,6 +48,17 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
     testImplementation 'org.awaitility:awaitility:4.2.0'
+}
+
+def props = new Properties()
+file(".env").withInputStream { props.load(it) }
+flyway {
+    driver = 'com.mysql.cj.jdbc.Driver'
+    url = props.getProperty("DB_URL")
+    user = props.getProperty("DB_USERNAME")
+    password = props.getProperty("DB_PASSWORD")
+    schemas = 'BankHistory'
+    cleanDisabled = false
 }
 
 tasks.named('test') {
