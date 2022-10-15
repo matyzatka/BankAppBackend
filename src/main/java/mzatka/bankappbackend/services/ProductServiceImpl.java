@@ -77,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = Throwable.class, value = Transactional.TxType.REQUIRES_NEW)
   @Scheduled(initialDelay = 10000, fixedRate = 10000)
   public void creditTheInterestOnSavingsAccounts() {
     try {
