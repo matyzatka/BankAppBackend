@@ -10,6 +10,7 @@ import mzatka.bankappbackend.models.enums.ProductType;
 import mzatka.bankappbackend.models.factories.ProductFactory;
 import mzatka.bankappbackend.repositories.ProductRepository;
 import mzatka.bankappbackend.utilities.IbanUtilities;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -76,26 +77,22 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  public void creditTheInterestOnSavingsAccounts() {}
-
-  //  @Override
-  //  @Transactional
-  //  @Scheduled(initialDelay = 1000, fixedRate = 10000)
-  //  public void creditTheInterestOnSavingsAccounts() {
-  //    try {
-  //      List<Product> products = productRepository.findAll();
-  //      if (!products.isEmpty()) {
-  //        products.stream()
-  //            .filter(product -> product.getProductType().equals(SAVINGS_ACCOUNT))
-  //            .forEach(
-  //                product ->
-  //
-  // product.setBalance(product.getBalance().multiply(product.getInterestRate())));
-  //      }
-  //    } catch (Exception e) {
-  //      System.out.println(e.getLocalizedMessage());
-  //    }
-  //  }
+  @Transactional
+  @Scheduled(initialDelay = 10000, fixedRate = 10000)
+  public void creditTheInterestOnSavingsAccounts() {
+    try {
+      List<Product> products = productRepository.findAll();
+      if (!products.isEmpty()) {
+        products.stream()
+            .filter(product -> product.getProductType().equals(SAVINGS_ACCOUNT))
+            .forEach(
+                product ->
+                    product.setBalance(product.getBalance().multiply(product.getInterestRate())));
+      }
+    } catch (Exception e) {
+      System.out.println(e.getLocalizedMessage());
+    }
+  }
 
   @Override
   public Product getProductByIban(String iban) {

@@ -13,6 +13,6 @@ public class SavingsAccount extends Product {
   public SavingsAccount() {
     this.setProductType(SAVINGS_ACCOUNT);
     this.setBalance(new BigDecimal("0"));
-    this.setInterestRate(new BigDecimal("1.1"));
+    this.setInterestRate(new BigDecimal("1.01"));
   }
 }

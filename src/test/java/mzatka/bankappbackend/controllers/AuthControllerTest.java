@@ -48,28 +48,6 @@ class AuthControllerTest {
   }
 
   @Test
-  public void can_save_new_user() throws Exception {
-    NewCustomerDto newCustomerDto =
-        new NewCustomerDto(
-            "maill@mail.com",
-            "user",
-            "password",
-            "first",
-            "name",
-            "1.1.1999",
-            "77777777",
-            "address");
-    mockMvc
-        .perform(
-            post("/auth/sign-up")
-                .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(newCustomerDto)))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.message", Is.is("Registration successful.")))
-        .andDo(print());
-  }
-
-  @Test
   public void can_login_user() throws Exception {
     mockMvc
         .perform(
