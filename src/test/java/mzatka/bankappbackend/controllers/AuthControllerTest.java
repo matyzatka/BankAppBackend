@@ -5,7 +5,6 @@ import mzatka.bankappbackend.models.dtos.LoginAttemptDto;
 import mzatka.bankappbackend.models.dtos.NewCustomerDto;
 import mzatka.bankappbackend.repositories.CustomerRepository;
 import mzatka.bankappbackend.services.CustomerService;
-import org.hamcrest.core.Is;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,6 @@ import javax.transaction.Transactional;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
