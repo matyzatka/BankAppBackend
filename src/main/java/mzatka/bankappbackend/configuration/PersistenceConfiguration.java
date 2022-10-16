@@ -10,7 +10,7 @@ public class PersistenceConfiguration {
   @Bean
   public FlywayMigrationStrategy migrationStrategy() {
     return flyway -> {
-      flyway.repair();
+      flyway.clean();
       flyway.migrate();
     };
   }
