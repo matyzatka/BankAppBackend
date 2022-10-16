@@ -1,4 +1,4 @@
-create table customer
+create table if not exists customer
 (
     id            bigint not null auto_increment,
     address       varchar(255),

@@ -1,4 +1,4 @@
-create table account
+create table if not exists  account
 (
     id          bigint not null auto_increment,
     created_at  varchar(255),

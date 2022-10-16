@@ -1,4 +1,4 @@
-create table verification_token
+create table if not exists verification_token
 (
     id          bigint not null auto_increment,
     expiry_date datetime,

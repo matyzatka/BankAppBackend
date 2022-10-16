@@ -1,4 +1,4 @@
-create table products
+create table if not exists  products
 (
     dtype           varchar(31) not null,
     id              bigint      not null auto_increment,
