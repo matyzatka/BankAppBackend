@@ -58,6 +58,7 @@ flyway {
     user = props.getProperty("DB_USERNAME")
     password = props.getProperty("DB_PASSWORD")
     cleanDisabled = false
+    locations = ['filesystem:src/main/resources/db.migration']
 }
 
 tasks.named('test') {
