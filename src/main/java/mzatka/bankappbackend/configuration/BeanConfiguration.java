@@ -2,9 +2,7 @@ package mzatka.bankappbackend.configuration;
 
 import lombok.RequiredArgsConstructor;
 import mzatka.bankappbackend.models.entities.Role;
-import mzatka.bankappbackend.repositories.CustomerRepository;
 import mzatka.bankappbackend.repositories.RoleRepository;
-import mzatka.bankappbackend.services.CustomerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;

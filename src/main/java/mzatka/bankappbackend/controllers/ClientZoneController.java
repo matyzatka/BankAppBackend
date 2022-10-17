@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import mzatka.bankappbackend.exceptions.*;
 import mzatka.bankappbackend.models.dtos.*;
 import mzatka.bankappbackend.models.entities.Customer;
-import mzatka.bankappbackend.models.entities.Product;
 import mzatka.bankappbackend.services.CustomerService;
 import mzatka.bankappbackend.services.DtoService;
 import mzatka.bankappbackend.services.ProductService;
@@ -66,10 +65,11 @@ public class ClientZoneController {
 
   @PostMapping("/block")
   public ResponseEntity<Dto> blockCustomerAccount(
-      @RequestHeader(name = "Authorization") String bearerToken, @RequestBody ConfirmationPasswordDto confirmationPasswordDto) {
+      @RequestHeader(name = "Authorization") String bearerToken,
+      @RequestBody ConfirmationPasswordDto confirmationPasswordDto) {
     Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
     if (!customerService.passwordIsCorrect(
-            confirmationPasswordDto.getPassword(), customer.getPassword())) {
+        confirmationPasswordDto.getPassword(), customer.getPassword())) {
       throw new IncorrectPasswordException("/client-zone/block");
     }
     customer.getAccount().setIsBlocked(true);
@@ -78,10 +78,11 @@ public class ClientZoneController {
 
   @PostMapping("/unblock")
   public ResponseEntity<Dto> unblockCustomerAccount(
-          @RequestHeader(name = "Authorization") String bearerToken, @RequestBody ConfirmationPasswordDto confirmationPasswordDto) {
+      @RequestHeader(name = "Authorization") String bearerToken,
+      @RequestBody ConfirmationPasswordDto confirmationPasswordDto) {
     Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
     if (!customerService.passwordIsCorrect(
-            confirmationPasswordDto.getPassword(), customer.getPassword())) {
+        confirmationPasswordDto.getPassword(), customer.getPassword())) {
       throw new IncorrectPasswordException("/client-zone/unblock");
     }
     customer.getAccount().setIsBlocked(false);
