@@ -25,4 +25,15 @@ public final class ExceptionMessageConfiguration {
 
   public static final String INVALID_CONFIRMATION_TOKEN_EXCEPTION_MESSAGE =
       "Confirmation token is not valid.";
+
+  public static final String ACCOUNT_ALREADY_BLOCKED_EXCEPTION_MESSAGE =
+      "Account is already blocked.";
+
+  public static final String ACCOUNT_ALREADY_UNBLOCKED_EXCEPTION_MESSAGE =
+      "Account is already unblocked.";
+
+  public static final String INCORRECT_PIN_CODE_EXCEPTION_MESSAGE = "Pin code is not correct.";
+
+  public static final String PRODUCT_IS_NOT_A_CREDIT_OR_DEBIT_CARD_EXCEPTION_MESSAGE =
+      "Product is not a debit or credit card.";
 }

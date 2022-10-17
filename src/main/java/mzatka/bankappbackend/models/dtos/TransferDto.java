@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 public class TransferDto implements Dto {
 
   @NotBlank @NotNull private String iban;
+  @NotBlank @NotNull private String pinCode;
 
   @NotNull
   @Min(1)

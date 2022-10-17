@@ -67,4 +67,31 @@ public class CustomExceptionHandler {
       InvalidConfirmationTokenException e) {
     return new ErrorResponseDto(INVALID_CONFIRMATION_TOKEN_EXCEPTION_MESSAGE, e.getMessage());
   }
+
+  @ExceptionHandler(AccountAlreadyBlockedException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public ErrorResponseDto handleAccountAlreadyBlockedException(AccountAlreadyBlockedException e) {
+    return new ErrorResponseDto(ACCOUNT_ALREADY_BLOCKED_EXCEPTION_MESSAGE, e.getMessage());
+  }
+
+  @ExceptionHandler(AccountAlreadyUnblockedException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public ErrorResponseDto handleAccountAlreadyUnblockedException(
+      AccountAlreadyUnblockedException e) {
+    return new ErrorResponseDto(ACCOUNT_ALREADY_UNBLOCKED_EXCEPTION_MESSAGE, e.getMessage());
+  }
+
+  @ExceptionHandler(IncorrectPinCodeException.class)
+  @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
+  public ErrorResponseDto handleIncorrectPinCodeException(IncorrectPinCodeException e) {
+    return new ErrorResponseDto(INCORRECT_PIN_CODE_EXCEPTION_MESSAGE, e.getMessage());
+  }
+
+  @ExceptionHandler(ProductIsNotDebitOrCreditCardException.class)
+  @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
+  public ErrorResponseDto handleProductIsNotDebitOrCreditCardException(
+      ProductIsNotDebitOrCreditCardException e) {
+    return new ErrorResponseDto(
+        PRODUCT_IS_NOT_A_CREDIT_OR_DEBIT_CARD_EXCEPTION_MESSAGE, e.getMessage());
+  }
 }

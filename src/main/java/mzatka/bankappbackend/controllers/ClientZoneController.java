@@ -72,7 +72,11 @@ public class ClientZoneController {
         confirmationPasswordDto.getPassword(), customer.getPassword())) {
       throw new IncorrectPasswordException("/client-zone/block");
     }
+    if (customer.getAccount().getIsBlocked()) {
+      throw new AccountAlreadyBlockedException("/client-zone/block");
+    }
     customer.getAccount().setIsBlocked(true);
+    customerService.saveCustomer(customer);
     return ok(new MessageDto("Customer's account has been blocked successfully."));
   }
 
@@ -85,7 +89,11 @@ public class ClientZoneController {
         confirmationPasswordDto.getPassword(), customer.getPassword())) {
       throw new IncorrectPasswordException("/client-zone/unblock");
     }
+    if (!customer.getAccount().getIsBlocked()) {
+      throw new AccountAlreadyUnblockedException("/client-zone/block");
+    }
     customer.getAccount().setIsBlocked(false);
+    customerService.saveCustomer(customer);
     return ok(new MessageDto("Customer's account has been unblocked successfully."));
   }
 

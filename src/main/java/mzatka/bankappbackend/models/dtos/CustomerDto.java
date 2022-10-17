@@ -18,5 +18,6 @@ public class CustomerDto implements Dto {
   private String phone;
   private String address;
   private Account account;
+  private Boolean enabled;
   private List<Role> roles;
 }
