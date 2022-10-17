@@ -33,8 +33,8 @@ public class AuthController {
         newCustomerDto.getUsername(), newCustomerDto.getEmail())) {
       throw new CustomerAlreadyExistsException("/auth/sign-up");
     }
-    Customer customer = customerService.registerNewCustomer(newCustomerDto);
     String url = request.getContextPath();
+    Customer customer = customerService.registerNewCustomer(newCustomerDto);
     applicationEventPublisher.publishEvent(new OnRegistrationCompleteEvent(customer, url));
     return ResponseEntity.ok(new MessageDto("Registration successful."));
   }

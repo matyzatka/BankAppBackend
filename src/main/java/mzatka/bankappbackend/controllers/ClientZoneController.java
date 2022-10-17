@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mzatka.bankappbackend.exceptions.*;
 import mzatka.bankappbackend.models.dtos.*;
 import mzatka.bankappbackend.models.entities.Customer;
+import mzatka.bankappbackend.models.entities.Product;
 import mzatka.bankappbackend.services.CustomerService;
 import mzatka.bankappbackend.services.DtoService;
 import mzatka.bankappbackend.services.ProductService;
@@ -11,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/client-zone")
@@ -26,7 +29,7 @@ public class ClientZoneController {
       @RequestHeader(name = "Authorization") String bearerToken) {
     Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
     CustomerDto customerDto = dtoService.convertToDto(customer);
-    return ResponseEntity.ok(customerDto);
+    return ok(customerDto);
   }
 
   @PostMapping("/pay")
@@ -46,7 +49,7 @@ public class ClientZoneController {
       throw new InsufficientFundsException("/client-zone/pay");
     }
     if (productService.transactionCompleted(transactionDto)) {
-      return ResponseEntity.ok(new MessageDto("Transaction successful."));
+      return ok(new MessageDto("Transaction successful."));
     }
     throw new UnknownErrorException("/client-zone/pay");
   }
@@ -58,7 +61,31 @@ public class ClientZoneController {
     Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
     customerService.assignValuesToCustomer(customer, customerDto);
     customerService.saveCustomer(customer);
-    return ResponseEntity.ok(new MessageDto("Customer updated successfully."));
+    return ok(new MessageDto("Customer updated successfully."));
+  }
+
+  @PostMapping("/block")
+  public ResponseEntity<Dto> blockCustomerAccount(
+      @RequestHeader(name = "Authorization") String bearerToken, @RequestBody ConfirmationPasswordDto confirmationPasswordDto) {
+    Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
+    if (!customerService.passwordIsCorrect(
+            confirmationPasswordDto.getPassword(), customer.getPassword())) {
+      throw new IncorrectPasswordException("/client-zone/block");
+    }
+    customer.getAccount().setIsBlocked(true);
+    return ok(new MessageDto("Customer's account has been blocked successfully."));
+  }
+
+  @PostMapping("/unblock")
+  public ResponseEntity<Dto> unblockCustomerAccount(
+          @RequestHeader(name = "Authorization") String bearerToken, @RequestBody ConfirmationPasswordDto confirmationPasswordDto) {
+    Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
+    if (!customerService.passwordIsCorrect(
+            confirmationPasswordDto.getPassword(), customer.getPassword())) {
+      throw new IncorrectPasswordException("/client-zone/unblock");
+    }
+    customer.getAccount().setIsBlocked(false);
+    return ok(new MessageDto("Customer's account has been unblocked successfully."));
   }
 
   @DeleteMapping("/delete")
@@ -73,7 +100,7 @@ public class ClientZoneController {
       }
       Long id = customer.getId();
       customerService.deleteCustomer(id);
-      return ResponseEntity.ok(new MessageDto("Customer deleted successfully."));
+      return ok(new MessageDto("Customer deleted successfully."));
     } catch (NullPointerException e) {
       throw new NoSuchCustomerException("/client-zone/delete");
     }
@@ -92,7 +119,7 @@ public class ClientZoneController {
     }
     if (productService.addedProduct(productName, customer)) {
       customerService.saveCustomer(customer);
-      return ResponseEntity.ok(
+      return ok(
           new MessageDto(
               String.format(
                   "Product {%s} successfully added to account of customer %s %s.",
@@ -114,7 +141,7 @@ public class ClientZoneController {
     }
     if (productService.deletedProduct(customer, iban)) {
       customerService.saveCustomer(customer);
-      return ResponseEntity.ok(
+      return ok(
           new MessageDto(
               String.format(
                   "Product with IBAN: %s removed successfully from account of %s %s.",

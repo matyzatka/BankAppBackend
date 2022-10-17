@@ -9,10 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.annotation.DirtiesContext;
+
+import javax.transaction.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class CustomerServiceImplTest {
 
   @Autowired CustomerService customerService;
@@ -55,6 +59,7 @@ class CustomerServiceImplTest {
   }
 
   @Test
+  @Transactional
   public void returns_UserDetails_from_username() {
     customerService.registerNewCustomer(
         new NewCustomerDto(
