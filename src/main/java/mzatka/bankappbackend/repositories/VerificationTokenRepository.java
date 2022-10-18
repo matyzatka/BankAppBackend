@@ -1,6 +1,5 @@
 package mzatka.bankappbackend.repositories;
 
-import mzatka.bankappbackend.models.entities.Customer;
 import mzatka.bankappbackend.models.entities.VerificationToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 

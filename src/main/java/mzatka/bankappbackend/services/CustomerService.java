@@ -38,5 +38,5 @@ public interface CustomerService {
 
   void createVerificationToken(Customer customer, String token);
 
-    String getVerificationToken(Customer customer);
+  String getVerificationToken(Customer customer);
 }
