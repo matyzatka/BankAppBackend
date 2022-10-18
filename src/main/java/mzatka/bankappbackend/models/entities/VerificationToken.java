@@ -4,8 +4,6 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.Date;
 
 @Data
@@ -25,17 +23,8 @@ public class VerificationToken {
   @JoinColumn(nullable = false, name = "customer_id")
   private Customer customer;
 
-  private Date expiryDate;
-
   public VerificationToken(String token, Customer customer) {
     this.token = token;
     this.customer = customer;
-  }
-
-  private Date calculateExpiryDate(int expiryTimeInMinutes) {
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTime(new Timestamp(calendar.getTime().getTime()));
-    calendar.add(Calendar.MINUTE, expiryTimeInMinutes);
-    return new Date(calendar.getTime().getTime());
   }
 }

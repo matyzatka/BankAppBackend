@@ -176,4 +176,11 @@ public class CustomerServiceImpl implements CustomerService {
     VerificationToken verificationToken = new VerificationToken(token, customer);
     verificationTokenRepository.save(verificationToken);
   }
+
+  @Override
+  public String getVerificationToken(Customer customer) {
+    return verificationTokenRepository
+        .findVerificationTokenByCustomerUsername(customer.getUsername())
+        .getToken();
+  }
 }

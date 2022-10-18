@@ -72,4 +72,32 @@ class CustomExceptionHandlerTest {
         customExceptionHandler.handleInvalidConfirmationTokenException(
             new InvalidConfirmationTokenException("msg")));
   }
+
+  @Test
+  void handleAccountAlreadyBlockedException() {
+    assertNotNull(
+        customExceptionHandler.handleAccountAlreadyBlockedException(
+            new AccountAlreadyBlockedException("msg")));
+  }
+
+  @Test
+  void handleAccountAlreadyUnblockedException() {
+    assertNotNull(
+        customExceptionHandler.handleAccountAlreadyUnblockedException(
+            new AccountAlreadyUnblockedException("msg")));
+  }
+
+  @Test
+  void handleIncorrectPinCodeException() {
+    assertNotNull(
+        customExceptionHandler.handleIncorrectPinCodeException(
+            new IncorrectPinCodeException("msg")));
+  }
+
+  @Test
+  void handleProductIsNotDebitOrCreditCardException() {
+    assertNotNull(
+        customExceptionHandler.handleProductIsNotDebitOrCreditCardException(
+            new ProductIsNotDebitOrCreditCardException("msg")));
+  }
 }

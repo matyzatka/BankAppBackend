@@ -126,7 +126,7 @@ class ProductServiceImplTest {
             });
     assertTrue(
         productService.hasSufficientFunds(new TransactionDto(senderIban, "06468497/0641", 500.0)));
-    assertTrue(productService.hasSufficientFunds(new TransferDto(senderIban, 500)));
+    assertTrue(productService.hasSufficientFunds(new TransferDto(senderIban, "1223", 500)));
   }
 
   @Test
@@ -144,7 +144,9 @@ class ProductServiceImplTest {
               product.setBalance(BigDecimal.valueOf(1000));
               product.setIBAN(iban);
             });
-    assertEquals(1500.0, productService.depositCashAndReturnBalance(new TransferDto(iban, 500)));
-    assertEquals(0, productService.withdrawCashAndReturnBalance(new TransferDto(iban, 1500)));
+    assertEquals(
+        1500.0, productService.depositCashAndReturnBalance(new TransferDto(iban, "1234", 500)));
+    assertEquals(
+        0, productService.withdrawCashAndReturnBalance(new TransferDto(iban, "1234", 1500)));
   }
 }
