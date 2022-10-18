@@ -32,11 +32,9 @@ public interface CustomerService {
 
   Customer getCustomerFromAuthorizationHeader(String bearerToken);
 
-  Customer getCustomerByVerificationToken(String verificationToken);
+  void createVerificationToken(Customer customer, String token);
 
   VerificationToken getVerificationToken(String verificationToken);
-
-  void createVerificationToken(Customer customer, String token);
 
   String getVerificationToken(Customer customer);
 }
