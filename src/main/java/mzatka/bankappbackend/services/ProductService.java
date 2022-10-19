@@ -1,5 +1,6 @@
 package mzatka.bankappbackend.services;
 
+import mzatka.bankappbackend.models.dtos.AllTransactionLogsDto;
 import mzatka.bankappbackend.models.dtos.TransactionDto;
 import mzatka.bankappbackend.models.dtos.TransferDto;
 import mzatka.bankappbackend.models.entities.Account;
@@ -32,6 +33,10 @@ public interface ProductService {
   boolean productNotBelongsToLoggedCustomer(String iban, Customer customer);
 
   boolean transactionCompleted(TransactionDto transactionDto);
+
+  void createTransactionLog(Product sender, Product receiver, Double amount);
+
+  AllTransactionLogsDto getAllTransactionLogsForCustomer(Customer customer);
 
   void synchronizeAccount(Product product);
 }

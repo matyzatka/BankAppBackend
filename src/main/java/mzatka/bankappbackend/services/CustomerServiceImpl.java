@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
+import mzatka.bankappbackend.exceptions.NoSuchCustomerException;
 import mzatka.bankappbackend.models.dtos.NewCustomerDto;
 import mzatka.bankappbackend.models.entities.Customer;
 import mzatka.bankappbackend.models.entities.Role;
@@ -156,7 +157,11 @@ public class CustomerServiceImpl implements CustomerService {
     JWTVerifier verifier = JWT.require(algorithm).build();
     DecodedJWT decodedJWT = verifier.verify(token);
     String username = decodedJWT.getSubject();
-    return getCustomerByUsername(username);
+    Customer customer = getCustomerByUsername(username);
+    if (customer == null) {
+      throw new NoSuchCustomerException("/customerService");
+    }
+    return customer;
   }
 
   @Override

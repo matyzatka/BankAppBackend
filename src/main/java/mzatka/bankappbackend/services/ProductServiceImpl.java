@@ -1,23 +1,29 @@
 package mzatka.bankappbackend.services;
 
 import lombok.RequiredArgsConstructor;
+import mzatka.bankappbackend.models.dtos.AllTransactionLogsDto;
 import mzatka.bankappbackend.models.dtos.TransactionDto;
 import mzatka.bankappbackend.models.dtos.TransferDto;
 import mzatka.bankappbackend.models.entities.Account;
 import mzatka.bankappbackend.models.entities.Customer;
 import mzatka.bankappbackend.models.entities.Product;
+import mzatka.bankappbackend.models.entities.TransactionLog;
 import mzatka.bankappbackend.models.enums.ProductType;
 import mzatka.bankappbackend.models.factories.ProductFactory;
 import mzatka.bankappbackend.repositories.ProductRepository;
+import mzatka.bankappbackend.repositories.TransactionLogRepository;
 import mzatka.bankappbackend.utilities.IbanUtilities;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
+import static java.util.stream.Collectors.toSet;
 import static mzatka.bankappbackend.models.enums.Currency.CZK;
 import static mzatka.bankappbackend.models.enums.ProductType.*;
 
@@ -26,6 +32,7 @@ import static mzatka.bankappbackend.models.enums.ProductType.*;
 public class ProductServiceImpl implements ProductService {
 
   private final ProductRepository productRepository;
+  private final TransactionLogRepository transactionLogRepository;
   private final IbanUtilities ibanUtilities;
 
   @Override
@@ -166,11 +173,49 @@ public class ProductServiceImpl implements ProductService {
       synchronizeAccount(sender);
       productRepository.save(receiver);
       synchronizeAccount(receiver);
+      createTransactionLog(sender, receiver, transactionDto.getAmount());
       return true;
     } catch (Exception e) {
       System.err.println(e.getMessage());
       return false;
     }
+  }
+
+  @Override
+  @Transactional
+  public void createTransactionLog(Product sender, Product receiver, Double amount) {
+    String senderName =
+        sender.getAccount().getCustomer().getFirstName()
+            + " "
+            + sender.getAccount().getCustomer().getLastName();
+    String receiverName =
+        receiver.getAccount().getCustomer().getFirstName()
+            + " "
+            + receiver.getAccount().getCustomer().getLastName();
+    transactionLogRepository.save(
+        new TransactionLog(
+            senderName,
+            sender.getIBAN(),
+            receiverName,
+            receiver.getIBAN(),
+            amount + receiver.getCurrency().toString()));
+  }
+
+  @Override
+  public AllTransactionLogsDto getAllTransactionLogsForCustomer(Customer customer) {
+    Set<String> customerIbans =
+        customer.getAccount().getProducts().stream().map(Product::getIBAN).collect(toSet());
+    List<TransactionLog> customerLogs = new ArrayList<>();
+    transactionLogRepository
+        .findAll()
+        .forEach(
+            log -> {
+              if (customerIbans.contains(log.getReceiverIban())
+                  || customerIbans.contains(log.getSenderIban())) {
+                customerLogs.add(log);
+              }
+            });
+    return new AllTransactionLogsDto(customerLogs);
   }
 
   @Override

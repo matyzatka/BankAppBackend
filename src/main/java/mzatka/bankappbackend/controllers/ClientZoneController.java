@@ -158,4 +158,11 @@ public class ClientZoneController {
     }
     throw new NoSuchProductWithIbanException("/client-zone/delete-product");
   }
+
+  @GetMapping("/history")
+  public ResponseEntity<Dto> getAllTransactionLogs(
+      @RequestHeader(name = "Authorization") String bearerToken) {
+    Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
+    return ResponseEntity.ok(productService.getAllTransactionLogsForCustomer(customer));
+  }
 }
