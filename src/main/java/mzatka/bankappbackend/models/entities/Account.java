@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -33,9 +31,7 @@ public class Account {
   @JsonBackReference
   private Customer customer;
 
-  @OneToMany
-  @LazyCollection(LazyCollectionOption.FALSE)
-  private List<Product> products;
+  @OneToMany private List<Product> products;
 
   private String createdAt;
   private Boolean isBlocked;
