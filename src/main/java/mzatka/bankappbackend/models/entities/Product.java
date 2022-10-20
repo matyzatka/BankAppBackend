@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
-import mzatka.bankappbackend.models.enums.Currency;
 import mzatka.bankappbackend.models.enums.ProductType;
 import mzatka.bankappbackend.utilities.BigDecimalConverter;
 
@@ -39,8 +38,7 @@ public abstract class Product {
   @Column(name = "balance")
   private BigDecimal balance;
 
-  @Enumerated(value = EnumType.STRING)
-  private Currency currency;
+  private String currency = "EUR";
 
   @JsonIgnore private BigDecimal interestRate;
 

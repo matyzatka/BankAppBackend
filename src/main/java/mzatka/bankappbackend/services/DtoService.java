@@ -7,5 +7,7 @@ import mzatka.bankappbackend.models.entities.Customer;
 public interface DtoService {
   CustomerDto convertToDto(Customer customer);
 
+  CustomerDto convertToDto(Customer customer, String currency);
+
   AllCustomersDto showAllCustomers();
 }

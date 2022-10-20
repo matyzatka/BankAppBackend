@@ -46,7 +46,7 @@ public class AtmController {
             String.format(
                 "Cash deposited successfully. New balance is: %s %s",
                 productService.depositCashAndReturnBalance(transferDto),
-                usedCard.getCurrency().toString())));
+                    usedCard.getCurrency())));
   }
 
   @PostMapping("/withdraw")
@@ -72,6 +72,6 @@ public class AtmController {
             String.format(
                 "Cash withdrawal successful. New balance is: %s %s",
                 productService.withdrawCashAndReturnBalance(transferDto),
-                usedCard.getCurrency().toString())));
+                    usedCard.getCurrency())));
   }
 }

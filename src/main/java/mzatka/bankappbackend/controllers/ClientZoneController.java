@@ -1,6 +1,7 @@
 package mzatka.bankappbackend.controllers;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mzatka.bankappbackend.exceptions.*;
 import mzatka.bankappbackend.models.dtos.*;
 import mzatka.bankappbackend.models.entities.Customer;
@@ -17,6 +18,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 @RequestMapping("/client-zone")
 @RequiredArgsConstructor
+@Slf4j
 public class ClientZoneController {
 
   private final CustomerService customerService;
@@ -25,9 +27,15 @@ public class ClientZoneController {
 
   @GetMapping
   public ResponseEntity<Dto> showCustomer(
-      @RequestHeader(name = "Authorization") String bearerToken) {
+      @RequestHeader(name = "Authorization") String bearerToken,
+      @RequestParam(required = false, name = "currency") String currency) {
     Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
-    CustomerDto customerDto = dtoService.convertToDto(customer);
+    CustomerDto customerDto;
+    if (currency == null) {
+      customerDto = dtoService.convertToDto(customer);
+    } else {
+      customerDto = dtoService.convertToDto(customer, currency.toLowerCase());
+    }
     return ok(customerDto);
   }
 

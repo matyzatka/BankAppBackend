@@ -24,7 +24,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
-import static mzatka.bankappbackend.models.enums.Currency.CZK;
 import static mzatka.bankappbackend.models.enums.ProductType.*;
 
 @Service
@@ -40,7 +39,6 @@ public class ProductServiceImpl implements ProductService {
   public Product createProduct(ProductType productType, Account account) {
     Product product = ProductFactory.createProduct(productType);
     product.setAccount(account);
-    product.setCurrency(CZK);
     if (!Objects.equals(product.getInterestRate(), new BigDecimal("0.00"))) {
       product.setInterestRating(
           (product
@@ -198,7 +196,7 @@ public class ProductServiceImpl implements ProductService {
             sender.getIBAN(),
             receiverName,
             receiver.getIBAN(),
-            amount + receiver.getCurrency().toString()));
+            amount + receiver.getCurrency()));
   }
 
   @Override
