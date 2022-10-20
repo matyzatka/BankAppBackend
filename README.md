@@ -12,10 +12,10 @@ data, changing personal information, establishing or canceling a financial produ
 The possibility of depositing or withdrawing cash is a matter of course, but that was only the beginning.
 
 ## Table of Contents
-- [Used technologies](used-technologies)
-- [Features](features)
-- [How to use app](how-to-use-app)
-- [Demo](demo)
+- [Used technologies](#used-technologies)
+- [Features](#features)
+- [How to use app](#how-to-use-app)
+- [Demo](#demo)
 
 ## Used technologies
 - **Project**: Java 18, Spring Boot 2.7.3, Gradle 7.4
@@ -70,4 +70,6 @@ The possibility of depositing or withdrawing cash is a matter of course, but tha
     
  - **Custom Exceptions**: majority of exceptions is handled by CustomExceptionHandler, displaying human-friendly messages
  
+ ## How to use app
  
+ ## Demo
