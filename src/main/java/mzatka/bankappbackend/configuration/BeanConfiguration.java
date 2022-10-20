@@ -2,14 +2,19 @@ package mzatka.bankappbackend.configuration;
 
 import lombok.RequiredArgsConstructor;
 import mzatka.bankappbackend.models.dtos.NewCustomerDto;
+import mzatka.bankappbackend.models.entities.Customer;
 import mzatka.bankappbackend.models.entities.Role;
+import mzatka.bankappbackend.models.enums.ProductType;
 import mzatka.bankappbackend.repositories.RoleRepository;
 import mzatka.bankappbackend.services.CustomerService;
+import mzatka.bankappbackend.services.ProductService;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
+import java.math.BigDecimal;
 
 @Configuration
 @EnableScheduling
@@ -18,6 +23,7 @@ public class BeanConfiguration {
 
   private final RoleRepository roleRepository;
   private final CustomerService customerService;
+  private final ProductService productService;
 
   @Bean
   public ModelMapper modelMapper() {
@@ -32,16 +38,28 @@ public class BeanConfiguration {
 
       customerService.registerNewCustomer(
           new NewCustomerDto(
-              "matous.zatka@gmail.com",
-              "matyzatka",
+              "admin.mail@gmail.com",
+              "admin",
               "password",
-              "Matouš",
-              "Zátka",
-              "1.1.1999",
-              "77777777",
-              "Kladno, Oaza, 999"));
-      customerService.addRoleToCustomer(
-          customerService.getCustomerByUsername("matyzatka"), "ROLE_ADMIN");
+              "Johnny",
+              "Cash",
+              "18-01-1990",
+              "429-318-247",
+              "Pleasant Hill, CA 3550"));
+      Customer customer = customerService.getCustomerByUsername("admin");
+      customer
+          .getAccount()
+          .getProducts()
+          .forEach(
+              product -> {
+                product.setBalance(BigDecimal.valueOf(5000));
+                productService.saveProduct(product);
+              });
+      productService.saveProduct(
+          productService.createProduct(ProductType.SAVINGS_ACCOUNT, customer.getAccount()));
+      customerService.addRoleToCustomer(customer, "ROLE_ADMIN");
+      customer.setEnabled(true);
+      customerService.saveCustomer(customer);
     };
   }
 }

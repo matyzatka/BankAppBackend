@@ -1,15 +1,12 @@
 package mzatka.bankappbackend.controllers;
 
 import lombok.RequiredArgsConstructor;
-import mzatka.bankappbackend.exceptions.IncorrectPinCodeException;
-import mzatka.bankappbackend.exceptions.InsufficientFundsException;
-import mzatka.bankappbackend.exceptions.NoSuchProductWithIbanException;
-import mzatka.bankappbackend.exceptions.ProductIsNotDebitOrCreditCardException;
+import mzatka.bankappbackend.exceptions.*;
 import mzatka.bankappbackend.models.dtos.Dto;
 import mzatka.bankappbackend.models.dtos.MessageDto;
 import mzatka.bankappbackend.models.dtos.TransferDto;
 import mzatka.bankappbackend.models.entities.products.DebitCard;
-import mzatka.bankappbackend.models.enums.ProductType;
+import mzatka.bankappbackend.services.AccountService;
 import mzatka.bankappbackend.services.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,16 +22,19 @@ import javax.validation.Valid;
 public class AtmController {
 
   private final ProductService productService;
+  private final AccountService accountService;
 
   @PostMapping("/deposit")
   public ResponseEntity<Dto> depositCash(@RequestBody @Valid TransferDto transferDto) {
     if (productService.ibanNotExists(transferDto.getIban())) {
       throw new NoSuchProductWithIbanException("/deposit");
     }
-    if (!productService
-        .getProductByIban(transferDto.getIban())
-        .getProductType()
-        .equals(ProductType.DEBIT_CARD)) {
+    if (accountService.isAccountBlocked(
+        productService.getCustomerByProduct(
+            productService.getProductByIban(transferDto.getIban())))) {
+      throw new AccountBlockedException("/deposit");
+    }
+    if (!productService.isProductDebitCard(transferDto.getIban())) {
       throw new ProductIsNotDebitOrCreditCardException("/withdraw");
     }
     DebitCard usedCard = (DebitCard) productService.getProductByIban(transferDto.getIban());
@@ -45,8 +45,7 @@ public class AtmController {
         new MessageDto(
             String.format(
                 "Cash deposited successfully. New balance is: %s %s",
-                productService.depositCashAndReturnBalance(transferDto),
-                    usedCard.getCurrency())));
+                productService.depositCashAndReturnBalance(transferDto), usedCard.getCurrency())));
   }
 
   @PostMapping("/withdraw")
@@ -54,10 +53,12 @@ public class AtmController {
     if (productService.ibanNotExists(transferDto.getIban())) {
       throw new NoSuchProductWithIbanException("/withdraw");
     }
-    if (!productService
-        .getProductByIban(transferDto.getIban())
-        .getProductType()
-        .equals(ProductType.DEBIT_CARD)) {
+    if (accountService.isAccountBlocked(
+        productService.getCustomerByProduct(
+            productService.getProductByIban(transferDto.getIban())))) {
+      throw new AccountBlockedException("/withdraw");
+    }
+    if (!productService.isProductDebitCard(transferDto.getIban())) {
       throw new ProductIsNotDebitOrCreditCardException("/withdraw");
     }
     DebitCard usedCard = (DebitCard) productService.getProductByIban(transferDto.getIban());
@@ -71,7 +72,6 @@ public class AtmController {
         new MessageDto(
             String.format(
                 "Cash withdrawal successful. New balance is: %s %s",
-                productService.withdrawCashAndReturnBalance(transferDto),
-                    usedCard.getCurrency())));
+                productService.withdrawCashAndReturnBalance(transferDto), usedCard.getCurrency())));
   }
 }

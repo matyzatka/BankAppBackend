@@ -33,4 +33,9 @@ public class AccountServiceImpl implements AccountService {
     accountRepository.save(account);
     return account;
   }
+
+  @Override
+  public boolean isAccountBlocked(Customer customer) {
+    return customer.getAccount().getIsBlocked();
+  }
 }

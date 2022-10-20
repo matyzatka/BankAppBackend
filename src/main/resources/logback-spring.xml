@@ -7,24 +7,7 @@
         </encoder>
     </appender>
 
-    <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/panthera-starline-tribes-logback.log</file>
-        <encoder>
-            <pattern>%d %p [%t] %C: %msg%n%throwable</pattern>
-        </encoder>
-
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/archived/panthera-starline-tribes-%d{yyyy-MM-dd}.%i-logback.log
-            </fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy
-                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>10MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-        </rollingPolicy>
-    </appender>
-
     <root level="${BANK_LOG_LEVEL}" additivity="false">
-        <appender-ref ref="File"/>
         <appender-ref ref="Console"/>
     </root>
 

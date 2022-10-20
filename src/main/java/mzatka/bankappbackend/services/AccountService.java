@@ -6,4 +6,6 @@ import mzatka.bankappbackend.models.entities.Customer;
 public interface AccountService {
 
   Account createNewAccount(Customer customer);
+
+  boolean isAccountBlocked(Customer customer);
 }

@@ -36,4 +36,6 @@ public final class ExceptionMessageConfiguration {
 
   public static final String PRODUCT_IS_NOT_A_CREDIT_OR_DEBIT_CARD_EXCEPTION_MESSAGE =
       "Product is not a debit or credit card.";
+
+  public static final String ACCOUNT_BLOCKED_EXCEPTION_MESSAGE = "Account blocked.";
 }

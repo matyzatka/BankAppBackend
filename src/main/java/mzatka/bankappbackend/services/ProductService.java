@@ -10,6 +10,8 @@ import mzatka.bankappbackend.models.enums.ProductType;
 
 public interface ProductService {
 
+  void saveProduct(Product product);
+
   Product createProduct(ProductType productType, Account account);
 
   boolean addedProduct(String productName, Customer customer);
@@ -19,6 +21,10 @@ public interface ProductService {
   void creditTheInterestOnSavingsAccounts();
 
   Product getProductByIban(String iban);
+
+  boolean isProductDebitCard(String iban);
+
+  Customer getCustomerByProduct(Product product);
 
   boolean ibanNotExists(String iban);
 

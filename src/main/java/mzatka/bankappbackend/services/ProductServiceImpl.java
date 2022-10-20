@@ -35,6 +35,11 @@ public class ProductServiceImpl implements ProductService {
   private final IbanUtilities ibanUtilities;
 
   @Override
+  public void saveProduct(Product product) {
+    productRepository.save(product);
+  }
+
+  @Override
   @Transactional
   public Product createProduct(ProductType productType, Account account) {
     Product product = ProductFactory.createProduct(productType);
@@ -83,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   @Transactional(rollbackOn = Throwable.class, value = Transactional.TxType.REQUIRES_NEW)
-  @Scheduled(initialDelay = 100000, fixedRate = 100000)
+  @Scheduled(initialDelay = 10000, fixedRate = 10000)
   public void creditTheInterestOnSavingsAccounts() {
     try {
       List<Product> products = productRepository.findAll();
@@ -105,6 +110,16 @@ public class ProductServiceImpl implements ProductService {
         .filter(product -> product.getIBAN().equals(iban))
         .findFirst()
         .orElse(null);
+  }
+
+  @Override
+  public boolean isProductDebitCard(String iban) {
+    return getProductByIban(iban).getProductType().equals(ProductType.DEBIT_CARD);
+  }
+
+  @Override
+  public Customer getCustomerByProduct(Product product) {
+    return product.getAccount().getCustomer();
   }
 
   @Override

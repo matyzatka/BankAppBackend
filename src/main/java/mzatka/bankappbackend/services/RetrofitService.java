@@ -25,7 +25,7 @@ public class RetrofitService {
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
-    JsonPlaceHolderApi service = retrofit.create(JsonPlaceHolderApi.class);
+    CurrencyApiCallService service = retrofit.create(CurrencyApiCallService.class);
 
     Call<ApiResponseDto> call = service.getCurrencies(LocalDate.now());
 

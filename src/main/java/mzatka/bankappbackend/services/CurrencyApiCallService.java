@@ -7,7 +7,7 @@ import retrofit2.http.Path;
 
 import java.time.LocalDate;
 
-public interface JsonPlaceHolderApi {
+public interface CurrencyApiCallService {
 
   @GET("{date}/currencies/eur.json")
   Call<ApiResponseDto> getCurrencies(@Path("date") LocalDate date);

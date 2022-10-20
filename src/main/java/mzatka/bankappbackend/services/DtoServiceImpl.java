@@ -8,6 +8,8 @@ import mzatka.bankappbackend.repositories.CustomerRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.RoundingMode;
+
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -33,7 +35,10 @@ public class DtoServiceImpl implements DtoService {
             product -> {
               try {
                 product.setBalance(
-                    product.getBalance().multiply(retrofitService.getCurrency(currency)));
+                    product
+                        .getBalance()
+                        .multiply(retrofitService.getCurrency(currency))
+                        .setScale(2, RoundingMode.HALF_UP));
                 product.setCurrency(currency.toUpperCase());
               } catch (Exception e) {
                 throw new RuntimeException(e);

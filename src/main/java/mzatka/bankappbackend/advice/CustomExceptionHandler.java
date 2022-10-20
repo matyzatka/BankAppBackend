@@ -94,4 +94,10 @@ public class CustomExceptionHandler {
     return new ErrorResponseDto(
         PRODUCT_IS_NOT_A_CREDIT_OR_DEBIT_CARD_EXCEPTION_MESSAGE, e.getMessage());
   }
+
+  @ExceptionHandler(AccountBlockedException.class)
+  @ResponseStatus(value = HttpStatus.FORBIDDEN)
+  public ErrorResponseDto handleAccountBlockedException(AccountBlockedException e) {
+    return new ErrorResponseDto(ACCOUNT_BLOCKED_EXCEPTION_MESSAGE, e.getMessage());
+  }
 }

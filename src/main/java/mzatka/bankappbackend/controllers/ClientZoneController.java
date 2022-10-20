@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import mzatka.bankappbackend.exceptions.*;
 import mzatka.bankappbackend.models.dtos.*;
 import mzatka.bankappbackend.models.entities.Customer;
+import mzatka.bankappbackend.services.AccountService;
 import mzatka.bankappbackend.services.CustomerService;
 import mzatka.bankappbackend.services.DtoService;
 import mzatka.bankappbackend.services.ProductService;
@@ -23,6 +24,7 @@ public class ClientZoneController {
 
   private final CustomerService customerService;
   private final ProductService productService;
+  private final AccountService accountService;
   private final DtoService dtoService;
 
   @GetMapping
@@ -30,12 +32,13 @@ public class ClientZoneController {
       @RequestHeader(name = "Authorization") String bearerToken,
       @RequestParam(required = false, name = "currency") String currency) {
     Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
-    CustomerDto customerDto;
-    if (currency == null) {
-      customerDto = dtoService.convertToDto(customer);
-    } else {
-      customerDto = dtoService.convertToDto(customer, currency.toLowerCase());
+    if (accountService.isAccountBlocked(customer)) {
+      throw new AccountBlockedException("/client-zone");
     }
+    CustomerDto customerDto =
+        currency == null
+            ? dtoService.convertToDto(customer)
+            : dtoService.convertToDto(customer, currency.toLowerCase());
     return ok(customerDto);
   }
 
@@ -44,6 +47,9 @@ public class ClientZoneController {
       @RequestHeader(name = "Authorization") String bearerToken,
       @RequestBody @Valid TransactionDto transactionDto) {
     Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
+    if (accountService.isAccountBlocked(customer)) {
+      throw new AccountBlockedException("/client-zone/pay");
+    }
     if (productService.ibanNotExists(transactionDto.getSendingIban())
         || productService.ibanNotExists(transactionDto.getReceivingIban())) {
       throw new NoSuchProductWithIbanException("/client-zone/pay");
@@ -66,6 +72,9 @@ public class ClientZoneController {
       @RequestHeader(name = "Authorization") String bearerToken,
       @RequestBody @Valid NewCustomerDto customerDto) {
     Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
+    if (accountService.isAccountBlocked(customer)) {
+      throw new AccountBlockedException("/client-zone/update");
+    }
     customerService.assignValuesToCustomer(customer, customerDto);
     customerService.saveCustomer(customer);
     return ok(new MessageDto("Customer updated successfully."));
@@ -111,6 +120,9 @@ public class ClientZoneController {
       @RequestBody @Valid ConfirmationPasswordDto confirmationPasswordDto) {
     try {
       Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
+      if (accountService.isAccountBlocked(customer)) {
+        throw new AccountBlockedException("/client-zone/delete");
+      }
       if (!customerService.passwordIsCorrect(
           confirmationPasswordDto.getPassword(), customer.getPassword())) {
         throw new IncorrectPasswordException("/client-zone/delete");
@@ -134,13 +146,20 @@ public class ClientZoneController {
     if (!customerService.passwordIsCorrect(inputPassword, storedPassword)) {
       throw new IncorrectPasswordException("/client-zone/add-product");
     }
+    if (accountService.isAccountBlocked(customer)) {
+      throw new AccountBlockedException("/client-zone/add-product");
+    }
     if (productService.addedProduct(productName, customer)) {
       customerService.saveCustomer(customer);
       return ok(
           new MessageDto(
-              String.format(
-                  "Product {%s} successfully added to account of customer %s %s.",
-                  productName, customer.getFirstName(), customer.getLastName())));
+              "Product {"
+                  + productName
+                  + "} successfully added to account of customer "
+                  + customer.getFirstName()
+                  + " "
+                  + customer.getLastName()
+                  + "."));
     }
     throw new InvalidProductNameException("/client-zone/add-product");
   }
@@ -156,13 +175,20 @@ public class ClientZoneController {
     if (!customerService.passwordIsCorrect(inputPassword, storedPassword)) {
       return ResponseEntity.badRequest().body(new MessageDto("Incorrect password."));
     }
+    if (accountService.isAccountBlocked(customer)) {
+      throw new AccountBlockedException("/client-zone/delete-product");
+    }
     if (productService.deletedProduct(customer, iban)) {
       customerService.saveCustomer(customer);
       return ok(
           new MessageDto(
-              String.format(
-                  "Product with IBAN: %s removed successfully from account of %s %s.",
-                  iban, customer.getFirstName(), customer.getLastName())));
+              "Product with IBAN: "
+                  + iban
+                  + " removed successfully from account of "
+                  + customer.getFirstName()
+                  + " "
+                  + customer.getLastName()
+                  + "."));
     }
     throw new NoSuchProductWithIbanException("/client-zone/delete-product");
   }
@@ -171,6 +197,9 @@ public class ClientZoneController {
   public ResponseEntity<Dto> getAllTransactionLogs(
       @RequestHeader(name = "Authorization") String bearerToken) {
     Customer customer = customerService.getCustomerFromAuthorizationHeader(bearerToken);
+    if (accountService.isAccountBlocked(customer)) {
+      throw new AccountBlockedException("/client-zone/history");
+    }
     return ResponseEntity.ok(productService.getAllTransactionLogsForCustomer(customer));
   }
 }
