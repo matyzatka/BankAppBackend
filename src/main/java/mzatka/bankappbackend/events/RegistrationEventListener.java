@@ -37,7 +37,7 @@ public class RegistrationEventListener implements ApplicationListener<OnRegistra
     email.setText(
         "Hello, "
             + customer.getFirstName()
-            + "!\n\n Please use this token for confirmation of your account by POST method (/auth/sendTokenByMail?token=[your_token]"
+            + "!\n\n Please use this token for confirmation of your registration by POST method /auth/confirmRegistration?token=your_token"
             + ("\n\n" + token + "\n\nThank you and have a nice day. :)"));
     javaMailSender.send(email);
   }
